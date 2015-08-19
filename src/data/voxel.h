@@ -5,13 +5,13 @@ namespace LibVolume
 {
 	namespace Data
 	{
+		template <typename MetaType>
 		struct Voxel
 		{
-			unsigned int id;
-			float density;
+			public:
+				MetaType metadata;
 			
-			unsigned int getID();
-			float getDensity();
+				MetaType* getMeta();
 		};
 	}
 }

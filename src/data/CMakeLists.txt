@@ -2,17 +2,9 @@
 #### CONFIGURATION ####
 #######################
 
-#settings.h header file
-configure_file(
-"settings.h.in"
-"settings.h"
-)
-
 ########################
 #### Subdirectories ####
 ########################
-
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/data")
 
 #################
 #### SOURCES ####
@@ -21,7 +13,6 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/data")
 #Add the appropriate source directories
 set(LIBVOLUME_SOURCE_DIRS
 ${LIBVOLUME_SOURCE_DIRS}
-"${PROJECT_BINARY_DIR}/src"
 "${CMAKE_CURRENT_SOURCE_DIR}"
 PARENT_SCOPE
 )
@@ -29,5 +20,7 @@ PARENT_SCOPE
 #Add the appropriate source files
 set(LIBVOLUME_SOURCE_FILES
 ${LIBVOLUME_SOURCE_FILES}
+${CMAKE_CURRENT_SOURCE_DIR}/voxel.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/voxelfield.cpp
 PARENT_SCOPE
 )
