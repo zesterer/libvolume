@@ -6,6 +6,12 @@ namespace LibVolume
 	namespace Data
 	{
 		template <typename MetaType>
+		VoxelField<MetaType>::VoxelField(glm::ivec3 size)
+		{
+			this->size = size;
+		}
+		
+		template <typename MetaType>
 		Voxel<MetaType>* VoxelField<MetaType>::getAt(glm::ivec3 pos)
 		{
 			if (pos.x < 0 || pos.x >= this->size.x)

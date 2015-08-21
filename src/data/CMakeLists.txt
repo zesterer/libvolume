@@ -2,10 +2,6 @@
 #### CONFIGURATION ####
 #######################
 
-########################
-#### Subdirectories ####
-########################
-
 #################
 #### SOURCES ####
 #################
@@ -24,3 +20,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/voxel.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/voxelfield.cpp
 PARENT_SCOPE
 )
+
+########################
+#### Subdirectories ####
+########################

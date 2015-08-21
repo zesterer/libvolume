@@ -28,6 +28,7 @@ namespace LibVolume
 				//An empty voxel, used for meshing
 				Voxel<MetaType> empty;
 				
+				VoxelField(glm::ivec3 size);
 				//Find the voxel at the specified position within the field
 				Voxel<MetaType>* getAt(glm::ivec3 pos);
 		};
