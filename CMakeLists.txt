@@ -102,6 +102,8 @@ endif ()
 #Link all the libraries with the application library
 target_link_libraries(${LIBVOLUME_NAME} ${LIBVOLUME_LINK_LIBRARIES})
 
+set(LIBVOLUME_INCLUDES ${LIBVOLUME_SOURCE_DIRS} PARENT_SCOPE)
+
 ######################
 #### INSTALLATION ####
 ######################
