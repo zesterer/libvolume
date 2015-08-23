@@ -31,7 +31,7 @@ set(LIBVOLUME_VERSION "${LIBVOLUME_VERSION_MAJOR}.${LIBVOLUME_VERSION_MINOR}.${L
 set(LIBVOLUME_DEBUG_ENABLED true)
 
 #Set CMake modules path
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules" ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules" ${CMAKE_MODULE_PATH})
 
 #Set the source files and directories we will use
 set(LIBVOLUME_SOURCE_FILES)
