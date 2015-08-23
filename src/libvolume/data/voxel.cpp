@@ -11,10 +11,19 @@ namespace LibVolume
 {
 	namespace Data
 	{
-		template <typename MetaType>
-		MetaType* Voxel<MetaType>::getMeta()
+		int Voxel::getType()
 		{
-			return &this->metadata;
+			return this->type;
+		}
+		
+		float Voxel::getDensity()
+		{
+			return this->density;
+		}
+		
+		void* Voxel::getMeta()
+		{
+			return this->metadata;
 		}
 	}
 }

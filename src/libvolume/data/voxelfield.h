@@ -15,7 +15,6 @@ namespace LibVolume
 {
 	namespace Data
 	{
-		template <typename MetaType>
 		class VoxelField
 		{
 			public:
@@ -23,14 +22,14 @@ namespace LibVolume
 				glm::ivec3 size;
 			
 				//The voxel data
-				std::vector<Voxel<MetaType>> voxels;
+				std::vector<Voxel> voxels;
 				
 				//An empty voxel, used for meshing
-				Voxel<MetaType> empty;
+				Voxel empty;
 				
 				VoxelField(glm::ivec3 size);
 				//Find the voxel at the specified position within the field
-				Voxel<MetaType>* getAt(glm::ivec3 pos);
+				Voxel* getAt(glm::ivec3 pos);
 		};
 	}
 }
