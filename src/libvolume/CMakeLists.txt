@@ -23,7 +23,7 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/common")
 #Add the appropriate source directories
 set(LIBVOLUME_SOURCE_DIRS
 ${LIBVOLUME_SOURCE_DIRS}
-"${PROJECT_BINARY_DIR}/src"
+"${PROJECT_BINARY_DIR}/src/libvolume"
 "${CMAKE_CURRENT_SOURCE_DIR}"
 "${CMAKE_CURRENT_SOURCE_DIR}/.."
 PARENT_SCOPE

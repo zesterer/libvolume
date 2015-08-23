@@ -13,7 +13,7 @@ namespace LibVolume
 		{
 			std::string output_strings[] = {"OUTPUT", "DEBUG", "ERROR"};
 
-			if ((LIBVOLUME_DEBUG_ENABLED && type == OutputType::DEBUG) || type != OutputType::DEBUG)
+			if ((LIBVOLUME_DEBUG_ENABLED && type == OutputType::Debug) || type != OutputType::Debug)
 			{
 				std::string output_tag = output_strings[type];
 
@@ -26,15 +26,15 @@ namespace LibVolume
 			if (test)
 			{
 				if (!silent)
-					output(label + ": success", OutputType::DEBUG);
+					output(label + ": success", OutputType::Debug);
 			}
 			else
 			{
-				output(label + ": failure", OutputType::ERROR);
+				output(label + ": failure", OutputType::Error);
 
 				if (critical)
 				{
-					output("Critical error, program closing.", OutputType::ERROR);
+					output("Critical error, program closing.", OutputType::Error);
 					exit(EXIT_FAILURE);
 				}
 			}

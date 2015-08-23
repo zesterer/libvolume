@@ -10,12 +10,12 @@ namespace LibVolume
 	{
 		enum OutputType
 		{
-			INFO,
-			DEBUG,
-			ERROR
+			Info,
+			Debug,
+			Error
 		};
 
-		void output(std::string message, OutputType type = OutputType::DEBUG);
+		void output(std::string message, OutputType type = OutputType::Debug);
 
 		bool test(bool test, std::string label = "NULL Test", bool critical = false, bool silent = false);
 	}
