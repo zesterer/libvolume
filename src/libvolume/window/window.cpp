@@ -27,7 +27,7 @@ namespace LibVolume
 			IO::output("Version:" + std::to_string(settings.majorVersion) + "." + std::to_string(settings.minorVersion));
 		}
 		
-		bool Window::outputContextDebug()
+		bool Window::tick()
 		{
 			bool closed = false;
 			
