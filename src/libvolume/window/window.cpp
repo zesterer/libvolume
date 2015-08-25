@@ -45,7 +45,7 @@ namespace LibVolume
 				}
 			}
 			
-			window.display();
+			this->sfml_window.display();
 			
 			return closed;
 		}
