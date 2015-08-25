@@ -15,6 +15,7 @@ namespace LibVolume
 			settings.majorVersion = 3;
 			settings.minorVersion = 0;
 			this->sfml_window = new sf::Window(sf::VideoMode(800, 600), "LibVolume OpenGL Test");
+			this->sfml_window->setVerticalSyncEnabled(true);
 		}
 		
 		void Window::outputContextDebug()
@@ -36,16 +37,16 @@ namespace LibVolume
 			{
 				if (event.type == sf::Event::Closed)
 				{
-					closed = false;
+					closed = true;
 					IO::output("Closed the window");
 				}
 				else if (event.type == sf::Event::Resized)
 				{
-					IO::output("Resized the window");
+					IO::output("Resized or moved the window");
 				}
 			}
 			
-			this->sfml_window.display();
+			this->sfml_window->display();
 			
 			return closed;
 		}
