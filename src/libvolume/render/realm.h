@@ -7,10 +7,11 @@ namespace LibVolume
 	{
 		class Realm
 		{
-			double time;
+			public:
+				double time;
 			
-			Realm();
-			void tick();
+				Realm();
+				void tick();
 		};
 	}
 }

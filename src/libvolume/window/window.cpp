@@ -14,7 +14,9 @@ namespace LibVolume
 			settings.antialiasingLevel = 4;
 			settings.majorVersion = 3;
 			settings.minorVersion = 0;
-			this->sfml_window = new sf::Window(sf::VideoMode(800, 600), "LibVolume OpenGL Test");
+			settings.attributeFlags = sf::ContextSettings::Attribute::Core;
+			
+			this->sfml_window = new sf::Window(sf::VideoMode(800, 600), "LibVolume OpenGL Test", sf::Style::Default, settings);
 			this->sfml_window->setVerticalSyncEnabled(true);
 		}
 		
