@@ -28,6 +28,16 @@ namespace LibVolume
 			IO::output("Version:" + std::to_string(settings.majorVersion) + "." + std::to_string(settings.minorVersion));
 		}
 		
+		void Window::activate()
+		{
+			this->sfml_window->setActive(true);
+		}
+		
+		void Window::deactivate()
+		{
+			this->sfml_window->setActive(false);
+		}
+		
 		bool Window::tick()
 		{
 			bool closed = false;
