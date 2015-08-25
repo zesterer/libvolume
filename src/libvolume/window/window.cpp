@@ -26,5 +26,28 @@ namespace LibVolume
 			IO::output("Antialiasing level:" + std::to_string(settings.antialiasingLevel));
 			IO::output("Version:" + std::to_string(settings.majorVersion) + "." + std::to_string(settings.minorVersion));
 		}
+		
+		bool Window::outputContextDebug()
+		{
+			bool closed = false;
+			
+			sf::Event event;
+			while (this->sfml_window->pollEvent(event))
+			{
+				if (event.type == sf::Event::Closed)
+				{
+					closed = false;
+					IO::output("Closed the window");
+				}
+				else if (event.type == sf::Event::Resized)
+				{
+					IO::output("Resized the window");
+				}
+			}
+			
+			window.display();
+			
+			return closed;
+		}
 	}
 }

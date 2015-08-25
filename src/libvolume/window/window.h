@@ -16,6 +16,7 @@ namespace LibVolume
 				
 				Window();
 				void outputContextDebug();
+				bool tick();
 		};
 	}
 }
