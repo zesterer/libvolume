@@ -16,8 +16,7 @@ namespace LibVolume
 				
 				Window();
 				void outputContextDebug();
-				void activate();
-				void deactivate();
+				void activate(bool enable);
 				bool tick();
 		};
 	}
