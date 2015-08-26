@@ -1,3 +1,7 @@
+//----LIBRARY----
+#include "glbinding/gl/gl.h"
+#include "glbinding/Binding.h"
+
 //----LOCAL----
 #include "window.h"
 #include "common/io.h"
@@ -18,6 +22,10 @@ namespace LibVolume
 			
 			this->sfml_window = new sf::Window(sf::VideoMode(800, 600), "LibVolume OpenGL Test", sf::Style::Default, settings);
 			this->sfml_window->setVerticalSyncEnabled(true);
+			
+			//Enable GLBinding
+			IO::output("Initialising GLBinding");
+			glbinding::Binding::initialize();
 		}
 		
 		void Window::outputContextDebug()

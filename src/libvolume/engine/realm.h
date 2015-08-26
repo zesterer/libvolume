@@ -3,7 +3,7 @@
 
 namespace LibVolume
 {
-	namespace Render
+	namespace Engine
 	{
 		class Realm
 		{
@@ -12,6 +12,8 @@ namespace LibVolume
 			
 				Realm();
 				void tick();
+				void preRender();
+				void render();
 		};
 	}
 }
