@@ -17,7 +17,7 @@ namespace LibVolume
 			settings.stencilBits = 8;
 			settings.antialiasingLevel = 4;
 			settings.majorVersion = 3;
-			settings.minorVersion = 0;
+			settings.minorVersion = 3;
 			settings.attributeFlags = sf::ContextSettings::Attribute::Core;
 			
 			this->sfml_window = new sf::Window(sf::VideoMode(800, 600), "LibVolume OpenGL Test", sf::Style::Default, settings);

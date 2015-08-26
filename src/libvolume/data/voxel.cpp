@@ -1,9 +1,3 @@
-//----LIBRARY----
-#include "SFML/Graphics.hpp"
-#include "glm/glm.hpp"
-#include "glbinding/gl/gl.h"
-#include "glbinding/Binding.h"
-
 //----LOCAL----
 #include "voxel.h"
 

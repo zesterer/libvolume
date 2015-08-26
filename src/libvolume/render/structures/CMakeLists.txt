@@ -6,8 +6,6 @@
 #### Subdirectories ####
 ########################
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/structures")
-
 #################
 #### SOURCES ####
 #################
@@ -22,6 +20,6 @@ PARENT_SCOPE
 #Add the appropriate source files
 set(LIBVOLUME_SOURCE_FILES
 ${LIBVOLUME_SOURCE_FILES}
-${CMAKE_CURRENT_SOURCE_DIR}/renderer.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/mesh.cpp
 PARENT_SCOPE
 )
