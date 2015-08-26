@@ -1,6 +1,9 @@
 #ifndef LIBVOLUME_RENDER_SCENE_H
 #define LIBVOLUME_RENDER_SCENE_H
 
+//----LOCAL----
+#include "render/renderer.h"
+
 namespace LibVolume
 {
 	namespace Engine
@@ -9,10 +12,11 @@ namespace LibVolume
 		{
 			public:
 				double time;
+				
+				Render::Renderer renderer;
 			
 				Realm();
 				void tick();
-				void preRender();
 				void render();
 		};
 	}
