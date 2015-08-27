@@ -150,6 +150,8 @@ namespace LibVolume
 						tmp_face.push_back(face);
 					}
 				}
+				
+				IO::output("Collected faces from file " + filename);
 
 				for (unsigned long face_id = 0; face_id < tmp_face.size(); face_id ++)
 				{
