@@ -1,18 +1,18 @@
 //----LOCAL----
-#include "entity.h"
+#include "object.h"
 
 namespace LibVolume
 {
 	namespace Engine
 	{
-		Entity::Entity()
+		Object::Object()
 		{
 			
 		}
 		
-		void Entity::tick()
+		void Object::tick()
 		{
-			this->state.tick();
+			
 		}
 	}
 }

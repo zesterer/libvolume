@@ -14,6 +14,7 @@ namespace LibVolume
 				//from the 'Render::RenderTarget' class.
 				bool renderable = false;
 				
+				Object();
 				virtual void tick();
 		};
 	}

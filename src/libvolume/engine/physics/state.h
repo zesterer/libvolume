@@ -17,8 +17,8 @@ namespace LibVolume
 			struct PointState
 			{
 				public:
-					glm::vec3 position;
-					glm::mat4x4 matrix;
+					glm::vec3 position = glm::vec3(0.0, 0.0, 0.0);
+					glm::mat4x4 matrix = glm::mat4(1.0f);
 					
 					virtual void update();
 			};
@@ -26,8 +26,8 @@ namespace LibVolume
 			struct BodyState : public PointState
 			{
 				public:
-					glm::quat orientation;
-					glm::vec3 scale;
+					glm::quat orientation = glm::quat(glm::vec3(0.0, 0.0, 0.0));
+					glm::vec3 scale = glm::vec3(1.0, 1.0, 1.0);
 					
 					virtual void update() override;
 			};
@@ -35,8 +35,8 @@ namespace LibVolume
 			struct DynamicState : public BodyState
 			{
 				public:
-					glm::vec3 velocity;
-					glm::quat spin;
+					glm::vec3 velocity = glm::vec3(0.0, 0.0, 0.0);
+					glm::quat spin = glm::quat(glm::vec3(0.0, 0.0, 0.0));
 				
 					void tick();
 					virtual void update() override;

@@ -20,38 +20,13 @@ namespace LibVolume
 		class Entity : public Object
 		{
 			public:
+				Physics::DynamicState state;
 				EntityType type;
 				
 				void* metadata;
 				
 				Entity();
-		};
-		
-		//Used for static entities (e.g: waypoint markers, static particles, etc.)
-		class StaticEntity : public Entity
-		{
-			public:
-				Physics::PointState state;
-				
-				StaticEntity();
-		};
-		
-		//Used for static body entities (e.g: terrain, metaobjects, etc.)
-		class StaticBodyEntity : public Entity
-		{
-			public:
-				Physics::BodyState state;
-				
-				StaticBodyEntity();
-		};
-		
-		//Used for dynamic body entities (e.g: moving voxel bodies, moving characters, etc.)
-		class DynamicBodyEntity : public Entity
-		{
-			public:
-				Physics::DynamicState state;
-				
-				DynamicBodyEntity();
+				virtual void tick() override;
 		};
 	}
 }
