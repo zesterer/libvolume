@@ -22,7 +22,7 @@ namespace LibVolume
 			bool Mesh::loadFromOBJ(std::string filename)
 			{
 				//Clear the polygon vector ready for new data
-				this->polygons.clear();
+				//this->polygons.clear();
 
 				std::vector<glm::vec3> tmp_pos;
 				std::vector<glm::vec3> tmp_col;
@@ -203,8 +203,30 @@ namespace LibVolume
 
 					this->polygons.push_back(poly);
 				}
+				
+				IO::output(std::to_string(this->polygons.size()) + " polygons!");
 
 				return true;
+			}
+			
+			void Mesh::buffer()
+			{
+				//Clear any existing memory before rebuffering
+				//gl::glDeleteVertexArrays(1, &this->gl_id);
+				
+				//Create the vertex array id and bind it
+				gl::glGenVertexArrays(1, &this->gl_id);
+				gl::glBindVertexArray(this->gl_id);
+
+				//Pass the vertex position data to GL (the graphics card)
+				gl::glBufferData(gl::GL_ARRAY_BUFFER, this->polygons.size() * sizeof(Polygon), &this->polygons[0], gl::GL_STATIC_DRAW);
+
+				this->buffered = true;
+				IO::output("Buffered model with " + std::to_string(this->polygons.size()) + " polygons.");
+
+				//We've buffered the data, so let's clear it
+				//if (this->clear_on_buffer)
+					//this->polygons.clear();
 			}
 		}
 	}

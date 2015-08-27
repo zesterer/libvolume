@@ -10,10 +10,15 @@ namespace LibVolume
 		Realm::Realm()
 		{
 			IO::output("Created realm");
+			
+			this->renderer.camera = &this->camera;
 		}
 		
 		void Realm::tick()
 		{
+			//Tick the camera
+			this->camera.tick();
+			
 			//Loop through the realm objects
 			for (unsigned int count = 0; count < this->objects.size(); count ++)
 			{

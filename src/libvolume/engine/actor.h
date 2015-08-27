@@ -3,13 +3,14 @@
 
 //----LOCAL----
 #include "render/structures/mesh.h"
+#include "render/rendertarget.h"
 #include "entity.h"
 
 namespace LibVolume
 {
 	namespace Engine
 	{
-		class Actor : public Entity
+		class Actor : public Render::RenderTarget, public Entity
 		{
 			public:
 				Render::Structures::Mesh mesh;

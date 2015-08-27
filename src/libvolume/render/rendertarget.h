@@ -8,15 +8,16 @@ namespace LibVolume
 		enum RenderType
 		{
 			None,
-			MeshedStatic,
-			MeshedBody,
-			MeshedTerrain
+			Actor
 		};
 		
 		//Anything that inherits this class can be rendered by the renderer class
 		class RenderTarget
 		{
-			RenderType rendertype = RenderType::None;
+			public:
+				RenderType rendertype = RenderType::None;
+				
+				RenderTarget();
 		};
 	}
 }

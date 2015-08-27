@@ -7,6 +7,7 @@
 //----LOCAL----
 #include "render/renderer.h"
 #include "object.h"
+#include "camera.h"
 
 namespace LibVolume
 {
@@ -16,6 +17,8 @@ namespace LibVolume
 		{
 			public:
 				double time;
+				
+				Camera camera;
 				
 				Render::Renderer renderer;
 				

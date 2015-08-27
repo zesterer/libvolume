@@ -2,11 +2,13 @@
 #### CONFIGURATION ####
 #######################
 
+#Shaders
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/std-vertex-shader.glsl" COPYONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/std-fragment-shader.glsl" COPYONLY)
+
 ########################
 #### Subdirectories ####
 ########################
-
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/physics")
 
 #################
 #### SOURCES ####
@@ -22,10 +24,5 @@ PARENT_SCOPE
 #Add the appropriate source files
 set(LIBVOLUME_SOURCE_FILES
 ${LIBVOLUME_SOURCE_FILES}
-${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/realm.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/actor.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/object.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/camera.cpp
 PARENT_SCOPE
 )

@@ -1,5 +1,6 @@
 //----LOCAL----
 #include "state.h"
+#include "common/io.h"
 
 namespace LibVolume
 {
@@ -26,6 +27,9 @@ namespace LibVolume
 				
 				//Apply positional transformations
 				this->matrix = glm::translate(this->matrix, this->position);
+				
+				//Scale
+				this->matrix = glm::scale(this->matrix, this->scale);
 			}
 			
 			void DynamicState::update()
@@ -44,6 +48,8 @@ namespace LibVolume
 				normalize(this->spin);
 				
 				this->orientation *= this->spin;
+				
+				this->update();
 			}
 		}
 	}

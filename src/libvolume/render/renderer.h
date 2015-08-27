@@ -3,6 +3,9 @@
 
 //----LOCAL----
 #include "rendertarget.h"
+#include "structures/shader.h"
+#include "engine/actor.h"
+#include "engine/camera.h"
 
 namespace LibVolume
 {
@@ -11,9 +14,15 @@ namespace LibVolume
 		class Renderer
 		{
 			public:
+				Structures::Shader* std_shader;
+				Structures::Shader* post_shader;
+				
+				Engine::Camera* camera;
+				
 				Renderer();
 				void preRender();
 				void renderTarget(RenderTarget* target);
+				void renderActor(Engine::Actor* actor);
 		};
 	}
 }

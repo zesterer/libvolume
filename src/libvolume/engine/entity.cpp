@@ -1,5 +1,6 @@
 //----LOCAL----
 #include "entity.h"
+#include "common/io.h"
 
 namespace LibVolume
 {
