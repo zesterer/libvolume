@@ -6,8 +6,6 @@
 #### Subdirectories ####
 ########################
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/physics")
-
 #################
 #### SOURCES ####
 #################
@@ -22,7 +20,6 @@ PARENT_SCOPE
 #Add the appropriate source files
 set(LIBVOLUME_SOURCE_FILES
 ${LIBVOLUME_SOURCE_FILES}
-${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/realm.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/state.cpp
 PARENT_SCOPE
 )

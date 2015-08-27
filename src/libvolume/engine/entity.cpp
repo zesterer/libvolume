@@ -5,6 +5,9 @@ namespace LibVolume
 {
 	namespace Engine
 	{
-		
+		Entity::Entity()
+		{
+			
+		}
 	}
 }

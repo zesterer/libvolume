@@ -14,10 +14,10 @@ namespace LibVolume
 			struct Vertex
 			{
 				public:
-					glm::vec3 pos;
-					glm::vec3 col;
-					glm::vec2 uv;
-					glm::vec3 norm;
+					glm::vec3 position;
+					glm::vec3 colour;
+					glm::vec2 uv_coords;
+					glm::vec3 normal;
 			};
 		}
 	}

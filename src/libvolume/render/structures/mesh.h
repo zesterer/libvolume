@@ -3,6 +3,7 @@
 
 //----STANDARD----
 #include "vector"
+#include "string"
 
 //----LOCAL----
 #include "polygon.h"
@@ -19,6 +20,7 @@ namespace LibVolume
 					std::vector<Polygon> polygons;
 					
 					Mesh();
+					bool loadFromOBJ(std::string filename);
 			};
 		}
 	}

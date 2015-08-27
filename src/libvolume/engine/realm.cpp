@@ -1,6 +1,7 @@
 //----LOCAL----
 #include "realm.h"
 #include "common/io.h"
+#include "render/rendertarget.h"
 
 namespace LibVolume
 {
@@ -13,6 +14,22 @@ namespace LibVolume
 		
 		void Realm::tick()
 		{
+			//Loop through the realm objects
+			for (unsigned int count = 0; count < this->objects.size(); count ++)
+			{
+				Object* object = this->objects[count];
+				
+				//Tick the object
+				object->tick();
+				
+				IO::output("Ticked an object");
+			}
+			
+			this->postTick();
+		}
+		
+		void Realm::postTick()
+		{
 			//Time in seconds
 			this->time += 1.0;
 		}
@@ -21,7 +38,17 @@ namespace LibVolume
 		{
 			this->renderer.preRender();
 			
-			//Add rendering here
+			//Loop through the realm objects
+			for (unsigned int count = 0; count < this->objects.size(); count ++)
+			{
+				Object* object = this->objects[count];
+				
+				//If the object is renderable, render it using the renderer
+				if (object->renderable)
+				{
+					this->renderer.renderTarget((Render::RenderTarget*)object);
+				}
+			}
 		}
 	}
 }

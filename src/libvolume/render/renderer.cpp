@@ -32,5 +32,11 @@ namespace LibVolume
 			gl::glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 			gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
 		}
+		
+		void Renderer::renderTarget(RenderTarget* target)
+		{
+			//Render a render target
+			IO::output("Rendered a target");
+		}
 	}
 }
