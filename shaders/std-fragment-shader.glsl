@@ -56,14 +56,14 @@ vec3 getTexture()
 {
 	return mix(vec3(0.7, 0.35, 0.05), vec3(0.0, 1.0, 0.0), dot((normalize(MODEL_MATRIX * MOD_NORM)).xyz, vec3(0.0, 0.0, 1.0)));
 
-	//No proper texture has been loaded in, so revert to colours
+	/*//No proper texture has been loaded in, so revert to colours
 	if (textureSize(TEXTURE_SAMPLER, 0) == ivec2(1, 1))
 		return FRAG_COL;
 
 	if (FRAG_UV == vec2(-1.0, -1.0)) //If there's no texture
 		return FRAG_COL;
 	else //It's got a texture!
-		return FRAG_COL * texture2DProjLod(TEXTURE_SAMPLER, vec3(FRAG_UV, 1.0), 0.0).rgb;
+		return FRAG_COL * texture2DProjLod(TEXTURE_SAMPLER, vec3(FRAG_UV, 1.0), 0.0).rgb;*/
 }
 
 vec4 getVector(vec4 vector)
@@ -137,7 +137,7 @@ void main()
 	MOD_NORM = normalize(FRAG_NORM);
 
 	//Normal bump mapping
-	if (getEffect(1) && false)
+	/*if (getEffect(1) && false)
 	{
 		vec4 norm = vec4(0.0, 0.0, 0.0, 0.0);
 		vec3 pos  = vec3(MODEL_MATRIX * FRAG_M_POS).xyz;
@@ -149,7 +149,7 @@ void main()
 		norm.z    = getPerlin(vec4(pos, 3.0), 0.5, lod, 1.0);
 		norm      = normalize(norm);
 		MOD_NORM  = normalize(MOD_NORM + norm * 0.55);
-	}
+	}*/
 
 	//Loop through all the lights
 	/*for (int count = 0; count < 16; count ++)

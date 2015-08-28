@@ -14,8 +14,13 @@ namespace LibVolume
 		{
 			IO::output("Created renderer");
 			
+			//Enable GLBinding
+			IO::output("Initialising GLBinding");
+			glbinding::Binding::initialize();
+			
 			this->std_shader = new Structures::Shader();
 			this->std_shader->loadFromFiles("../libvolume/shaders/std-vertex-shader.glsl", "../libvolume/shaders/std-fragment-shader.glsl");
+			this->std_shader->enable();
 		}
 		
 		void Renderer::preRender()
@@ -28,7 +33,7 @@ namespace LibVolume
 			gl::glDepthFunc(gl::GL_LESS);
 
 			// Render to our framebuffer
-			//gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, this->render_buffer->gl_id);
+			gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, 0);
 			gl::glViewport(0, 0, 640 * 1.4, 480 * 1.4);
 
 			//Blank the screen
@@ -39,26 +44,23 @@ namespace LibVolume
 		void Renderer::renderTarget(RenderTarget* target)
 		{
 			//Render a render target
-			IO::output("Rendering target...");
+			//IO::output("Rendering target...");
 			
 			//TODO
 			if (target->rendertype == RenderType::Actor || true)
 			{
-				IO::output("Target is an instance of Engine::Actor");
-				this->renderActor((Engine::Actor*)target);
+				//IO::output("Target is an instance of Engine::Actor");
+				this->renderActor(dynamic_cast<Engine::Actor*>(target));
 			}
 			else if(target->rendertype == RenderType::None)
 			{
-				IO::output("Target isn't an actor");
+				//IO::output("Target isn't an actor");
 			}
 		}
 		
 		void Renderer::renderActor(Engine::Actor* actor)
 		{
-			IO::output("Rendering Actor...");
-			
-			//What is the buffer array composed of?
-			int length[] = {sizeof(glm::vec3), sizeof(glm::vec3), sizeof(glm::vec2), sizeof(glm::vec3)};
+			//IO::output("Rendering Actor...");
 			
 			//Buffer the mesh if it's not already been done
 			if (!actor->mesh.buffered)
@@ -71,6 +73,8 @@ namespace LibVolume
 			this->std_shader->enable();
 			
 			//Tell the shaders what different parts of the buffer mean using the above array
+			//What is the buffer array composed of?
+			int length[] = {sizeof(glm::vec3), sizeof(glm::vec3), sizeof(glm::vec2), sizeof(glm::vec3)};
 			gl::GLuint offset = 0;
 			for (gl::GLuint array_id = 0; array_id < 4; array_id ++)
 			{
@@ -99,15 +103,15 @@ namespace LibVolume
 			//glUniform1i(glGetUniformLocation(this->std_shader->gl_id, "MATERIAL_EFFECTS"), material->effects);
 
 			//this->assignLights();
-
+			
 			//Draw the model
 			gl::glDrawArrays(actor->mesh.mode, 0, actor->mesh.polygons.size() * 3);
-
+			
 			//Disable all the vertex attribute arrays again
 			for (int count = 0; count < 4; count ++)
 				gl::glDisableVertexAttribArray(count);
 			
-			IO::output("Rendered Actor");
+			//IO::output("Rendered Actor");
 		}
 	}
 }

@@ -27,7 +27,7 @@ namespace LibVolume
 				//Tick the object
 				object->tick();
 				
-				IO::output("Ticked an object");
+				//IO::output("Ticked an object");
 			}
 			
 			this->postTick();
@@ -51,7 +51,7 @@ namespace LibVolume
 				//If the object is renderable, render it using the renderer
 				if (object->renderable)
 				{
-					this->renderer.renderTarget((Render::RenderTarget*)object);
+					this->renderer.renderTarget(dynamic_cast<Render::RenderTarget*>(object));
 				}
 			}
 		}

@@ -18,6 +18,8 @@ namespace LibVolume
 				RenderType rendertype = RenderType::None;
 				
 				RenderTarget();
+				
+				virtual void dummy();
 		};
 	}
 }

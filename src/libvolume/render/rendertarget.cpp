@@ -9,5 +9,10 @@ namespace LibVolume
 		{
 			
 		}
+		
+		void RenderTarget::dummy()
+		{
+			
+		}
 	}
 }

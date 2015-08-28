@@ -95,6 +95,9 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/shaders")
 #Add all directories that need to be added
 include_directories(${LIBVOLUME_SOURCE_DIRS})
 
+#Make it a debug build
+add_definitions("-Wall" "-Wextra" "-pedantic" "-g3")
+
 #Build the application library
 if (LIBVOLUME_COMPILE_STATIC)
 	add_library(${LIBVOLUME_NAME} STATIC ${LIBVOLUME_SOURCE_FILES})
