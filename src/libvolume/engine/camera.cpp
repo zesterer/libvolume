@@ -7,7 +7,7 @@ namespace LibVolume
 	{
 		Camera::Camera()
 		{
-			this->state.position = glm::vec3(0.0, 0.0, 30.0);
+			this->state.position = glm::vec3(0.0, 3.0, 20.0);
 		}
 		
 		void Camera::update()

@@ -189,6 +189,8 @@ void main()
 	}*/
 
 	COLOR = getTexture() * diffuse + specular;
+	
+	COLOR = FRAG_M_POS.xyz;
 
 	//FRAMEBUFFER_COLOR = COLOR;
 }
