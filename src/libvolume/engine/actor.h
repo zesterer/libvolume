@@ -16,6 +16,7 @@ namespace LibVolume
 				Render::Structures::Mesh mesh;
 				
 				Actor();
+				virtual void tick() override;
 		};
 	}
 }
