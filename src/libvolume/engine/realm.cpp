@@ -17,7 +17,13 @@ namespace LibVolume
 		void Realm::tick()
 		{
 			//Tick the camera
-			this->camera.tick((float)this->event_manager->window_size_state.width / (float)this->event_manager->window_size_state.height);
+			int w, h;
+			w = this->event_manager->window_size_state.width;
+			h = this->event_manager->window_size_state.height;
+			if (w <= 0 || h <= 0)
+				this->camera.tick(1.0f);
+			else
+				this->camera.tick((float)w / (float)h);
 			
 			//Loop through the realm objects
 			for (unsigned int count = 0; count < this->objects.size(); count ++)
