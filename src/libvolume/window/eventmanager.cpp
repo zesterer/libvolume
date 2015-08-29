@@ -14,5 +14,10 @@ namespace LibVolume
 		{
 			return &this->window_size_state;
 		}
+		
+		KeyboardState* EventManager::getKeyboardState()
+		{
+				return &this->keyboard_state;
+		}
 	}
 }

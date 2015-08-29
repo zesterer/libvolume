@@ -1,13 +1,16 @@
 //----LOCAL----
 #include "camera.h"
 
+#define PI 3.141592
+
 namespace LibVolume
 {
 	namespace Engine
 	{
 		Camera::Camera()
 		{
-			this->state.position = glm::vec3(0.0, 3.0, 20.0);
+			this->state.position = glm::vec3(-20.0, 0.0, 0.0);
+			this->state.orientation = glm::quat(glm::vec3(0.0, PI / 2.0, PI / 2.0));
 		}
 		
 		void Camera::update()
@@ -29,6 +32,8 @@ namespace LibVolume
 		void Camera::tick(float screen_ratio)
 		{
 			this->screen_ratio = screen_ratio;
+			
+			this->state.tick();
 			this->update();
 		}
 	}

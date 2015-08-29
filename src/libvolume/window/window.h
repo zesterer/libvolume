@@ -22,6 +22,7 @@ namespace LibVolume
 				void outputContextDebug();
 				void activate(bool enable);
 				bool tick();
+				void checkKeys();
 		};
 	}
 }

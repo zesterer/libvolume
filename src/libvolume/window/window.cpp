@@ -21,6 +21,10 @@ namespace LibVolume
 			this->event_manager.window_size_state.height = 480;
 			
 			this->sfml_window = new sf::Window(sf::VideoMode(640, 480), "LibVolume OpenGL Test", sf::Style::Default, settings);
+			unsigned char icon[3 * 4] = {255, 0, 0, 0, 255, 0, 0, 0, 255, 255, 255, 0};
+			this->sfml_window->setIcon(2, 2, icon);
+			this->sfml_window->setFramerateLimit(60);
+			this->sfml_window->setMouseCursorVisible(false);
 			this->sfml_window->setVerticalSyncEnabled(true);
 		}
 		
@@ -59,9 +63,28 @@ namespace LibVolume
 				}
 			}
 			
+			this->checkKeys();
+			
 			this->sfml_window->display();
 			
 			return closed;
+		}
+		
+		void Window::checkKeys()
+		{
+			this->event_manager.keyboard_state.key_w = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+			this->event_manager.keyboard_state.key_a = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+			this->event_manager.keyboard_state.key_s = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+			this->event_manager.keyboard_state.key_d = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+			
+			this->event_manager.keyboard_state.key_up = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
+			this->event_manager.keyboard_state.key_left = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
+			this->event_manager.keyboard_state.key_down = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
+			this->event_manager.keyboard_state.key_right = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+			
+			this->event_manager.keyboard_state.key_space = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+			this->event_manager.keyboard_state.key_shift = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+			this->event_manager.keyboard_state.key_enter = sf::Keyboard::isKeyPressed(sf::Keyboard::Return);
 		}
 	}
 }
