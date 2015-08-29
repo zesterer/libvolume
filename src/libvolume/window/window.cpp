@@ -16,6 +16,10 @@ namespace LibVolume
 			settings.minorVersion = 3;
 			settings.attributeFlags = sf::ContextSettings::Attribute::Core;
 			
+			//Set the correct event handler window size
+			this->event_manager.window_size_state.width = 640;
+			this->event_manager.window_size_state.height = 480;
+			
 			this->sfml_window = new sf::Window(sf::VideoMode(640, 480), "LibVolume OpenGL Test", sf::Style::Default, settings);
 			this->sfml_window->setVerticalSyncEnabled(true);
 		}
