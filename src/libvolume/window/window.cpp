@@ -16,7 +16,7 @@ namespace LibVolume
 			settings.minorVersion = 3;
 			settings.attributeFlags = sf::ContextSettings::Attribute::Core;
 			
-			this->sfml_window = new sf::Window(sf::VideoMode(800, 600), "LibVolume OpenGL Test", sf::Style::Default, settings);
+			this->sfml_window = new sf::Window(sf::VideoMode(640, 480), "LibVolume OpenGL Test", sf::Style::Default, settings);
 			this->sfml_window->setVerticalSyncEnabled(true);
 		}
 		
@@ -49,6 +49,8 @@ namespace LibVolume
 				}
 				else if (event.type == sf::Event::Resized)
 				{
+					this->event_manager.window_size_state.width = this->sfml_window->getSize().x;
+					this->event_manager.window_size_state.height = this->sfml_window->getSize().y;
 					IO::output("Resized or moved the window");
 				}
 			}

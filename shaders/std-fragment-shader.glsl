@@ -192,7 +192,7 @@ void main()
 	
 	float p = getPerlin(FRAG_M_POS, 1.0, 3.0, 1.0);
 	
-	COLOR = (vec3(0.4, 0.2, 0.0) - vec3(p, p, p) / 2.0) * getDiffuse(vec4(1.0, -3.0, 0.0, 0.0), 0.0) + 10.0 * getSpecular(vec4(-1.0, 0.0, 0.0, 0.0));
+	COLOR = (vec3(1.0, 0.5, 0.0) - vec3(p, p, p) / 2.0) * getDiffuse(vec4(1.0, -3.0, 0.0, 0.0), 0.0) + 10.0 * getSpecular(vec4(-1.0, 0.0, 0.0, 0.0));
 
 	//FRAMEBUFFER_COLOR = COLOR;
 }

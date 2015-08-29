@@ -8,6 +8,7 @@
 #include "render/renderer.h"
 #include "object.h"
 #include "camera.h"
+#include "window/eventmanager.h"
 
 namespace LibVolume
 {
@@ -21,6 +22,7 @@ namespace LibVolume
 				Camera camera;
 				
 				Render::Renderer renderer;
+				Window::EventManager* event_manager;
 				
 				std::vector<Object*> objects;
 			
@@ -28,6 +30,7 @@ namespace LibVolume
 				void tick();
 				void postTick();
 				void render();
+				void setEventManager(Window::EventManager* event_manager);
 		};
 	}
 }

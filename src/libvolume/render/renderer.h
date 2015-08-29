@@ -6,6 +6,7 @@
 #include "structures/shader.h"
 #include "engine/actor.h"
 #include "engine/camera.h"
+#include "window/eventmanager.h"
 
 namespace LibVolume
 {
@@ -14,6 +15,8 @@ namespace LibVolume
 		class Renderer
 		{
 			public:
+				Window::EventManager* event_manager;
+				
 				Structures::Shader* std_shader;
 				Structures::Shader* post_shader;
 				
@@ -23,6 +26,7 @@ namespace LibVolume
 				void preRender();
 				void renderTarget(RenderTarget* target);
 				void renderActor(Engine::Actor* actor);
+				void setEventManager(Window::EventManager* event_manager);
 		};
 	}
 }

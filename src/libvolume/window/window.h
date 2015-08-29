@@ -4,6 +4,9 @@
 //----LIBRARY----
 #include "SFML/Window.hpp"
 
+//----LOCAL----
+#include "eventmanager.h"
+
 namespace LibVolume
 {
 	namespace Window
@@ -12,6 +15,8 @@ namespace LibVolume
 		{
 			public:
 				sf::Window* sfml_window;
+				
+				EventManager event_manager;
 				
 				Window();
 				void outputContextDebug();

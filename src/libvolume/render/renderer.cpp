@@ -34,7 +34,7 @@ namespace LibVolume
 
 			// Render to our framebuffer
 			gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, 0);
-			gl::glViewport(0, 0, 640 * 1.4, 480 * 1.4);
+			gl::glViewport(0, 0, this->event_manager->window_size_state.width, this->event_manager->window_size_state.height);
 
 			//Blank the screen
 			gl::glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -112,6 +112,11 @@ namespace LibVolume
 				gl::glDisableVertexAttribArray(count);
 			
 			//IO::output("Rendered Actor");
+		}
+		
+		void Renderer::setEventManager(Window::EventManager* event_manager)
+		{
+			this->event_manager = event_manager;
 		}
 	}
 }

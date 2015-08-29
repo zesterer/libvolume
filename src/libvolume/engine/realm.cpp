@@ -17,7 +17,7 @@ namespace LibVolume
 		void Realm::tick()
 		{
 			//Tick the camera
-			this->camera.tick();
+			this->camera.tick((float)this->event_manager->window_size_state.width / (float)this->event_manager->window_size_state.height);
 			
 			//Loop through the realm objects
 			for (unsigned int count = 0; count < this->objects.size(); count ++)
@@ -54,6 +54,12 @@ namespace LibVolume
 					this->renderer.renderTarget(dynamic_cast<Render::RenderTarget*>(object));
 				}
 			}
+		}
+		
+		void Realm::setEventManager(Window::EventManager* event_manager)
+		{
+			this->event_manager = event_manager;
+			this->renderer.setEventManager(event_manager);
 		}
 	}
 }

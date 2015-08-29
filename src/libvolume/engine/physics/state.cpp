@@ -22,11 +22,11 @@ namespace LibVolume
 				//Clear the matrix ready to change it
 				this->matrix = glm::mat4(1.0f);
 				
-				//Apply quaternion orientational transformations
-				this->matrix = glm::toMat4(this->orientation) * this->matrix;
-				
 				//Apply positional transformations
 				this->matrix = glm::translate(this->matrix, this->position);
+				
+				//Apply quaternion orientational transformations
+				this->matrix *= glm::toMat4(this->orientation);
 				
 				//Scale
 				this->matrix = glm::scale(this->matrix, this->scale);
@@ -47,7 +47,7 @@ namespace LibVolume
 				normalize(this->orientation);
 				normalize(this->spin);
 				
-				this->orientation *= this->spin;
+				this->orientation = this->spin * this->orientation;
 				
 				this->update();
 			}

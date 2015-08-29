@@ -36,7 +36,7 @@ namespace LibVolume
 			{
 				public:
 					glm::vec3 velocity = glm::vec3(0.0, 0.0, 0.0);
-					glm::quat spin = glm::quat(glm::vec3(0.0, 0.03, 0.0));
+					glm::quat spin = glm::quat(glm::vec3(0.0, 0.0, 0.0));
 				
 					void tick();
 					virtual void update() override;

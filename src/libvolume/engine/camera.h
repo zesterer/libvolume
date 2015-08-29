@@ -23,10 +23,11 @@ namespace LibVolume
 				float fov = 0.95;
 				float min_render = 0.01;
 				float max_render = 1000;
+				float screen_ratio = 1.0;
 				
 				Camera();
 				void update();
-				void tick();
+				void tick(float screen_ratio);
 		};
 	}
 }

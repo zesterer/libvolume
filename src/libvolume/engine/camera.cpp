@@ -23,11 +23,12 @@ namespace LibVolume
 			this->matrix = translate(this->matrix, glm::vec3(-this->state.position.x, -this->state.position.y, -this->state.position.z));
 			
 			//Perspective / projection
-			this->perspective_matrix = glm::perspective(this->fov, 640.0f / 480.0f, this->min_render, this->max_render);
+			this->perspective_matrix = glm::perspective(this->fov, this->screen_ratio, this->min_render, this->max_render);
 		}
 		
-		void Camera::tick()
+		void Camera::tick(float screen_ratio)
 		{
+			this->screen_ratio = screen_ratio;
 			this->update();
 		}
 	}
