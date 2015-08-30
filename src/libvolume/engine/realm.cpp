@@ -10,10 +10,10 @@ namespace LibVolume
 		Realm::Realm()
 		{
 			IO::output("Created realm");
-			
+
 			this->renderer.camera = &this->camera;
 		}
-		
+
 		void Realm::tick()
 		{
 			//Tick the camera
@@ -24,44 +24,46 @@ namespace LibVolume
 				this->camera.tick(1.0f);
 			else
 				this->camera.tick((float)w / (float)h);
-			
+
 			//Loop through the realm objects
 			for (unsigned int count = 0; count < this->objects.size(); count ++)
 			{
 				Object* object = this->objects[count];
-				
+
 				//Tick the object
 				object->tick();
-				
+
 				//IO::output("Ticked an object");
 			}
-			
+
 			this->postTick();
 		}
-		
+
 		void Realm::postTick()
 		{
 			//Time in seconds
 			this->time += 1.0;
 		}
-		
+
 		void Realm::render()
 		{
-			this->renderer.preRender();
-			
+			this->renderer.preRender(Render::RenderMode::PreDeferred);
+
 			//Loop through the realm objects
 			for (unsigned int count = 0; count < this->objects.size(); count ++)
 			{
 				Object* object = this->objects[count];
-				
+
 				//If the object is renderable, render it using the renderer
 				if (object->renderable)
 				{
 					this->renderer.renderTarget(dynamic_cast<Render::RenderTarget*>(object));
 				}
 			}
+
+			this->renderer.postRender(Render::RenderMode::PostDeferred);
 		}
-		
+
 		void Realm::setEventManager(Window::EventManager* event_manager)
 		{
 			this->event_manager = event_manager;

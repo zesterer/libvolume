@@ -179,7 +179,7 @@ namespace LibVolume
 					}
 
 					//We got normals!
-					if ((face.has_parts & 0b00100000) == 0b00100000 && false) //If we have normal data
+					if ((face.has_parts & 0b00100000) == 0b00100000 && true) //If we have normal data
 					{
 						//Set to default normals
 						poly.a.normal = tmp_norm[face.a_norm - 1];

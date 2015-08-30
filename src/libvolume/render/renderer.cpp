@@ -13,17 +13,25 @@ namespace LibVolume
 		Renderer::Renderer()
 		{
 			IO::output("Created renderer");
-			
+
 			//Enable GLBinding
 			IO::output("Initialising GLBinding");
 			glbinding::Binding::initialize();
-			
+
 			this->std_shader = new Structures::Shader();
 			this->std_shader->loadFromFiles("../libvolume/shaders/std-vertex-shader.glsl", "../libvolume/shaders/std-fragment-shader.glsl");
-			this->std_shader->enable();
+
+			this->predeferred_shader = new Structures::Shader();
+			this->predeferred_shader->loadFromFiles("../libvolume/shaders/predeferred-vertex-shader.glsl", "../libvolume/shaders/predeferred-fragment-shader.glsl");
+
+			this->postdeferred_shader = new Structures::Shader();
+			this->postdeferred_shader->loadFromFiles("../libvolume/shaders/postdeferred-vertex-shader.glsl", "../libvolume/shaders/postdeferred-fragment-shader.glsl");
+
+			this->bufferScreenQuad();
+			this->gbuffer.init();
 		}
-		
-		void Renderer::preRender()
+
+		void Renderer::preRender(RenderMode render_mode)
 		{
 			//Enable backface culling
 			gl::glEnable(gl::GL_CULL_FACE);
@@ -33,19 +41,54 @@ namespace LibVolume
 			gl::glDepthFunc(gl::GL_LESS);
 
 			// Render to our framebuffer
-			gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, 0);
-			gl::glViewport(0, 0, this->event_manager->window_size_state.width, this->event_manager->window_size_state.height);
+			if (render_mode == RenderMode::PreDeferred)
+			{
+				gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, this->gbuffer.gbuffer_id);
+				gl::glViewport(0, 0, this->event_manager->window_size_state.width, this->event_manager->window_size_state.height);
+			}
+			else if (render_mode == RenderMode::PostDeferred)
+			{
+				gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, 0);
+				gl::glViewport(0, 0, this->event_manager->window_size_state.width, this->event_manager->window_size_state.height);
+			}
+			else
+			{
+				gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, 0);
+				gl::glViewport(0, 0, this->event_manager->window_size_state.width, this->event_manager->window_size_state.height);
+			}
+
+			//Enable the shader
+			if (render_mode == RenderMode::PreDeferred)
+			{
+				this->predeferred_shader->enable();
+			}
+			else if (render_mode == RenderMode::PostDeferred)
+			{
+				this->postdeferred_shader->enable();
+			}
+			else
+			{
+				this->std_shader->enable();
+			}
 
 			//Blank the screen
-			gl::glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-			gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
+			gl::glClearColor(0.7f, 0.7f, 0.9f, 0.0f);
+
+			if (render_mode == RenderMode::PostDeferred)
+			{
+				gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
+			}
+			else
+			{
+				gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
+			}
 		}
-		
+
 		void Renderer::renderTarget(RenderTarget* target)
 		{
 			//Render a render target
 			//IO::output("Rendering target...");
-			
+
 			//TODO
 			if (target->rendertype == RenderType::Actor || true)
 			{
@@ -57,21 +100,18 @@ namespace LibVolume
 				//IO::output("Target isn't an actor");
 			}
 		}
-		
+
 		void Renderer::renderActor(Engine::Actor* actor)
 		{
 			//IO::output("Rendering Actor...");
-			
+
 			//Buffer the mesh if it's not already been done
 			if (!actor->mesh.buffered)
 				actor->mesh.buffer();
-			
+
 			//Bind the vertex buffer
 			gl::glBindBuffer(gl::GL_ARRAY_BUFFER, actor->mesh.gl_id);
-			
-			//Enable the shader
-			this->std_shader->enable();
-			
+
 			//Tell the shaders what different parts of the buffer mean using the above array
 			//What is the buffer array composed of?
 			int length[] = {sizeof(glm::vec3), sizeof(glm::vec3), sizeof(glm::vec2), sizeof(glm::vec3)};
@@ -82,7 +122,7 @@ namespace LibVolume
 				gl::glVertexAttribPointer(array_id, length[array_id] / sizeof(gl::GLfloat), gl::GL_FLOAT, gl::GL_FALSE, sizeof(Structures::Vertex), (void*)(unsigned long)offset);
 				offset += length[array_id];
 			}
-			
+
 			//Find the uniform camera perspective matrix, then assign it
 			gl::GLuint perspective_matrix_id = gl::glGetUniformLocation(this->std_shader->gl_id, "PERSPECTIVE_MATRIX");
 			gl::glUniformMatrix4fv(perspective_matrix_id, 1, gl::GL_FALSE, &this->camera->perspective_matrix[0][0]);
@@ -103,20 +143,82 @@ namespace LibVolume
 			//glUniform1i(glGetUniformLocation(this->std_shader->gl_id, "MATERIAL_EFFECTS"), material->effects);
 
 			//this->assignLights();
-			
+
 			//Draw the model
 			gl::glDrawArrays(actor->mesh.mode, 0, actor->mesh.polygons.size() * 3);
-			
+
 			//Disable all the vertex attribute arrays again
 			for (int count = 0; count < 4; count ++)
 				gl::glDisableVertexAttribArray(count);
-			
+
 			//IO::output("Rendered Actor");
 		}
-		
+
+		void Renderer::postRender(RenderMode render_mode)
+		{
+            this->preRender(render_mode);
+
+			//Disable backface culling
+			gl::glDisable(gl::GL_CULL_FACE);
+
+			//Disable the depth buffer
+			gl::glDisable(gl::GL_DEPTH_TEST);
+			gl::glDepthFunc(gl::GL_NONE);
+
+			gl::glBindBuffer(gl::GL_ARRAY_BUFFER, this->gl_quad_id);
+
+			//Tell the shaders what different parts of the buffer mean using the above array
+			gl::glEnableVertexAttribArray(0);
+			gl::glVertexAttribPointer(0, 3, gl::GL_FLOAT, gl::GL_FALSE, sizeof(gl::GLfloat) * 3, (void*)(unsigned long)0);
+
+			gl::GLuint position_tex_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "POSITION_BUFFER");
+			gl::glActiveTexture(gl::GL_TEXTURE0);
+			gl::glUniform1i(position_tex_id, 0);
+			gl::glBindTexture(gl::GL_TEXTURE_2D, this->gbuffer.position_id);
+
+			gl::GLuint normal_tex_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "NORMAL_BUFFER");
+			gl::glActiveTexture(gl::GL_TEXTURE1);
+			gl::glUniform1i(normal_tex_id, 1);
+			gl::glBindTexture(gl::GL_TEXTURE_2D, this->gbuffer.normal_id);
+
+			gl::GLuint colour_tex_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "COLOUR_BUFFER");
+			gl::glActiveTexture(gl::GL_TEXTURE2);
+			gl::glUniform1i(colour_tex_id, 2);
+			gl::glBindTexture(gl::GL_TEXTURE_2D, this->gbuffer.colour_id);
+
+			//GLuint depth_id = glGetUniformLocation(framebuffer->shader->gl_id, "RENDER_DEPTH");
+			//glUniform1i(depth_id, 0);
+			//glBindTexture(GL_TEXTURE_2D, framebuffer->gl_depth_id);
+
+			gl::glDrawArrays(gl::GL_TRIANGLES, 0, sizeof(gl::GLfloat) * 6 * 3);
+
+			gl::glDisableVertexAttribArray(0);
+		}
+
 		void Renderer::setEventManager(Window::EventManager* event_manager)
 		{
 			this->event_manager = event_manager;
+		}
+
+		void Renderer::bufferScreenQuad()
+		{
+			//Create the screen quad
+			gl::glGenVertexArrays(1, &this->gl_quad_id);
+			gl::glBindVertexArray(this->gl_quad_id);
+
+			const gl::GLfloat gl_quad_data[] =
+			{
+				-1.0, -1.0,  0.0,
+				 1.0, -1.0,  0.0,
+				-1.0,  1.0,  0.0,
+				-1.0,  1.0,  0.0,
+				 1.0, -1.0,  0.0,
+				 1.0,  1.0,  0.0,
+			};
+
+			gl::glGenBuffers(1, &this->gl_quad_id);
+			gl::glBindBuffer(gl::GL_ARRAY_BUFFER, this->gl_quad_id);
+			gl::glBufferData(gl::GL_ARRAY_BUFFER, sizeof(gl_quad_data), gl_quad_data, gl::GL_STATIC_DRAW);
 		}
 	}
 }

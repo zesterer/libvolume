@@ -189,10 +189,10 @@ void main()
 	}*/
 
 	COLOR = getTexture() * diffuse + specular;
-	
-	float p = getPerlin(FRAG_M_POS, 1.0, 3.0, 1.0);
-	
-	COLOR = (vec3(1.0, 0.5, 0.0) - vec3(p, p, p) / 2.0) * getDiffuse(vec4(1.0, -3.0, 0.0, 0.0), 0.0) + 10.0 * getSpecular(vec4(-1.0, 0.0, 0.0, 0.0));
+
+	float p = getPerlin(FRAG_M_POS, 1.0, 4.0, 1.0);
+
+	COLOR = (vec3(1.0, 0.5, 0.0) - vec3(p, p, p) / 2.0) * max(0.15, getDiffuse(vec4(1.0, -3.0, 0.0, 0.0), 0.0)) + 10.0 * getSpecular(vec4(-1.0, 0.0, 0.0, 0.0));
 
 	//FRAMEBUFFER_COLOR = COLOR;
 }
