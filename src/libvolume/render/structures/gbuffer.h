@@ -16,7 +16,7 @@ namespace LibVolume
 				public:
 					gl::GLuint gbuffer_id;
 
-					gl::GLuint position_id, normal_id, colour_id, material_id, depth_id;
+					gl::GLuint position_id, normal_id, colour_id, material_id;
 
 					gl::GLuint render_depth_id;
 

@@ -142,8 +142,6 @@ namespace LibVolume
 
 			//glUniform1i(glGetUniformLocation(this->std_shader->gl_id, "MATERIAL_EFFECTS"), material->effects);
 
-			//this->assignLights();
-
 			//Draw the model
 			gl::glDrawArrays(actor->mesh.mode, 0, actor->mesh.polygons.size() * 3);
 
@@ -186,13 +184,45 @@ namespace LibVolume
 			gl::glUniform1i(colour_tex_id, 2);
 			gl::glBindTexture(gl::GL_TEXTURE_2D, this->gbuffer.colour_id);
 
+			//Find the uniform camera perspective matrix, then assign it
+			gl::GLuint perspective_matrix_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "PERSPECTIVE_MATRIX");
+			gl::glUniformMatrix4fv(perspective_matrix_id, 1, gl::GL_FALSE, &this->camera->perspective_matrix[0][0]);
+
+			//Find the uniform camera matrix, then assign it
+			gl::GLuint camera_matrix_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "CAMERA_MATRIX");
+			gl::glUniformMatrix4fv(camera_matrix_id, 1, gl::GL_FALSE, &this->camera->matrix[0][0]);
+
 			//GLuint depth_id = glGetUniformLocation(framebuffer->shader->gl_id, "RENDER_DEPTH");
 			//glUniform1i(depth_id, 0);
 			//glBindTexture(GL_TEXTURE_2D, framebuffer->gl_depth_id);
 
+			this->assignLights();
+
 			gl::glDrawArrays(gl::GL_TRIANGLES, 0, sizeof(gl::GLfloat) * 6 * 3);
 
 			gl::glDisableVertexAttribArray(0);
+		}
+
+		void Renderer::assignLights()
+		{
+			//Find the uniform lighting vector, then assign it
+			glm::vec4 light_vector_array[16];
+			glm::vec4 light_colour_array[16];
+
+			for (unsigned int light = 0; light < this->light_list->size(); light ++)
+			{
+				Structures::Light* clight = (*this->light_list)[light];
+
+				if (clight->type == Structures::LightType::Directional)
+					light_vector_array[light] = glm::vec4(clight->position, 0.0);
+				else
+					light_vector_array[light] = glm::vec4(clight->position, 1.0);
+
+				light_colour_array[light] = glm::vec4(clight->colour, clight->ambiance);
+			}
+
+			gl::glUniform4fv(gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "LIGHT_VECTOR"), 16 * 4, &light_vector_array[0].x);
+			gl::glUniform4fv(gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "LIGHT_COLOUR"), 16 * 4, &light_colour_array[0].x);
 		}
 
 		void Renderer::setEventManager(Window::EventManager* event_manager)

@@ -39,6 +39,14 @@ namespace LibVolume
 				gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MAG_FILTER, (gl::GLuint)gl::GL_NEAREST);
 				gl::glFramebufferTexture2D(gl::GL_FRAMEBUFFER, gl::GL_COLOR_ATTACHMENT2, gl::GL_TEXTURE_2D, this->colour_id, 0);
 
+				//Material texture
+				gl::glGenTextures(1, &this->material_id);
+				gl::glBindTexture(gl::GL_TEXTURE_2D, this->colour_id);
+				gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, (gl::GLuint)gl::GL_RGB, 640, 480, 0, gl::GL_RGB, gl::GL_FLOAT, NULL);
+				gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MIN_FILTER, (gl::GLuint)gl::GL_NEAREST);
+				gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MAG_FILTER, (gl::GLuint)gl::GL_NEAREST);
+				gl::glFramebufferTexture2D(gl::GL_FRAMEBUFFER, gl::GL_COLOR_ATTACHMENT2, gl::GL_TEXTURE_2D, this->material_id, 0);
+
 				//Tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
 				gl::GLenum attachments[3] = {gl::GL_COLOR_ATTACHMENT0, gl::GL_COLOR_ATTACHMENT1, gl::GL_COLOR_ATTACHMENT2};
 				gl::glDrawBuffers(3, attachments);

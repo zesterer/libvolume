@@ -9,6 +9,7 @@
 #include "object.h"
 #include "camera.h"
 #include "window/eventmanager.h"
+#include "render/structures/light.h"
 
 namespace LibVolume
 {
@@ -18,14 +19,17 @@ namespace LibVolume
 		{
 			public:
 				double time;
-				
+
 				Camera camera;
-				
+
 				Render::Renderer renderer;
 				Window::EventManager* event_manager;
-				
+
+				//Light list
+				std::vector<Render::Structures::Light*> light_list;
+
 				std::vector<Object*> objects;
-			
+
 				Realm();
 				void tick();
 				void postTick();

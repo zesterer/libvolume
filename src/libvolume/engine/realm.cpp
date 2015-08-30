@@ -12,6 +12,7 @@ namespace LibVolume
 			IO::output("Created realm");
 
 			this->renderer.camera = &this->camera;
+			this->renderer.light_list = &this->light_list;
 		}
 
 		void Realm::tick()
