@@ -135,18 +135,18 @@ void main()
 
 	float p = getPerlin(BUFFER_POSITION / 50.0, 1.0, 4.0, 1.0);
 
-	COLOUR = (vec3(0.5, 0.0, 1.0) + BUFFER_COLOUR - vec3(p, p, p)) * diffuse + specular;
+	COLOUR = (vec3(0.8, 0.26, 0.0) + BUFFER_COLOUR - vec3(p, p, p) * 0.3) * diffuse + specular;
 
-	/*for (float x = -1.0; x < 1.0; x += 1.0)
+	for (float x = -1.0; x < 1.0; x += 1.0)
 	{
 		for (float y = -1.0; y < 1.0; y += 1.0)
 		{
-			float position_diff = length(texture(POSITION_BUFFER, pos + vec2(x, y) * 0.005).rgb - BUFFER_POSITION.xyz);
+			float position_diff = length(texture(POSITION_BUFFER, pos + vec2(x, y) * 0.002).rgb - BUFFER_POSITION.xyz);
 
-			if (position_diff > 0.1 * length(BUFFER_POSITION.xyz))
+			if (position_diff > 0.05 * length(BUFFER_POSITION.xyz))
 				COLOUR *= 0.5;
 		}
-	}*/
+	}
 
 	COLOUR = floor(COLOUR * 16.0) / 16.0;
 
