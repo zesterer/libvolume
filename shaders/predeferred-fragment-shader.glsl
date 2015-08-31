@@ -27,20 +27,20 @@ smooth in lowp    vec4      F_M_MODEL_NORMAL;
 layout (location = 0) out vec3 POSITION_BUFFER;
 layout (location = 1) out vec3 NORMAL_BUFFER;
 layout (location = 2) out vec4 COLOUR_BUFFER;
-layout (location = 3) out highp float DEPTH_BUFFER;
 
 vec3 getTexture()
 {
-	return mix(vec3(0.7, 0.35, 0.05), vec3(0.0, 1.0, 0.0), dot((normalize(MODEL_MATRIX * F_W_NORMAL)).xyz, vec3(0.0, 0.0, 1.0)));
+	return F_W_COLOUR;
+	//return mix(vec3(0.7, 0.35, 0.05), vec3(0.0, 1.0, 0.0), dot((normalize(MODEL_MATRIX * F_W_NORMAL)).xyz, vec3(0.0, 0.0, 1.0)));
 
-	/*//No proper texture has been loaded in, so revert to colours
+	//No proper texture has been loaded in, so revert to colours
 	if (textureSize(TEXTURE_SAMPLER, 0) == ivec2(1, 1))
-		return FRAG_COL;
+		return F_W_COLOUR;
 
 	if (F_W_UV == vec2(-1.0, -1.0)) //If there's no texture
-		return FRAG_COL;
+		return F_W_COLOUR;
 	else //It's got a texture!
-		return FRAG_COL * texture2DProjLod(TEXTURE_SAMPLER, vec3(F_W_UV, 1.0), 0.0).rgb;*/
+		return F_W_COLOUR * texture2DProjLod(TEXTURE_SAMPLER, vec3(F_W_UV, 1.0), 0.0).rgb;
 }
 
 void main()
@@ -48,5 +48,4 @@ void main()
 	POSITION_BUFFER = F_W_POSITION.xyz;
 	NORMAL_BUFFER = F_W_NORMAL.xyz;
 	COLOUR_BUFFER.rgb = getTexture();
-	DEPTH_BUFFER = 1.0;//length((CAMERA_MATRIX * F_W_POSITION).xyz);
 }

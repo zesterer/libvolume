@@ -16,15 +16,15 @@ namespace LibVolume
 		{
 			public:
 				Physics::DynamicState state;
-				
+
 				glm::mat4 matrix;
 				glm::mat4 perspective_matrix;
-				
+
 				float fov = 0.95;
 				float min_render = 0.01;
-				float max_render = 1000;
+				float max_render = 100000.0;
 				float screen_ratio = 1.0;
-				
+
 				Camera();
 				void update();
 				void tick(float screen_ratio);

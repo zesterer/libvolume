@@ -16,9 +16,9 @@ namespace LibVolume
 		{
 			Mesh::Mesh()
 			{
-				
+
 			}
-			
+
 			bool Mesh::loadFromOBJ(std::string filename)
 			{
 				//Clear the polygon vector ready for new data
@@ -77,6 +77,7 @@ namespace LibVolume
 					}
 					else if (c_line[0] == 'f' && c_line[1] == ' ') //Deal with the vertex UV coordinates
 					{
+						bool error = false;
 						//The actual string
 						char vertex[3][20];
 						//The ids of all the data
@@ -115,42 +116,45 @@ namespace LibVolume
 							}
 
 
-							if (!IO::test(matches, "Parsing file", false, true))
-								return false;
+							if (!IO::test(matches, "Parsing error. Attempting to continue", false, true))
+								error = true;
 						}
 
-						for (int x = 0; x < 3; x ++)
-							if (pos_index[x] < 0) pos_index[x] *= -1;
+						if (!error)
+						{
+							for (int x = 0; x < 3; x ++)
+								if (pos_index[x] < 0) pos_index[x] *= -1;
 
-						for (int x = 0; x < 3; x ++)
-							if (tex_index[x] < 0) tex_index[x] *= -1;
+							for (int x = 0; x < 3; x ++)
+								if (tex_index[x] < 0) tex_index[x] *= -1;
 
-						for (int x = 0; x < 3; x ++)
-							if (norm_index[x] < 0) norm_index[x] *= -1;
+							for (int x = 0; x < 3; x ++)
+								if (norm_index[x] < 0) norm_index[x] *= -1;
 
-						Face face;
+							Face face;
 
-						face.a_pos = pos_index[0];
-						face.a_col = pos_index[0];
-						face.a_tex = tex_index[0];
-						face.a_norm = norm_index[0];
+							face.a_pos = pos_index[0];
+							face.a_col = pos_index[0];
+							face.a_tex = tex_index[0];
+							face.a_norm = norm_index[0];
 
-						face.b_pos = pos_index[1];
-						face.b_col = pos_index[1];
-						face.b_tex = tex_index[1];
-						face.b_norm = norm_index[1];
+							face.b_pos = pos_index[1];
+							face.b_col = pos_index[1];
+							face.b_tex = tex_index[1];
+							face.b_norm = norm_index[1];
 
-						face.c_pos = pos_index[2];
-						face.c_col = pos_index[2];
-						face.c_tex = tex_index[2];
-						face.c_norm = norm_index[2];
+							face.c_pos = pos_index[2];
+							face.c_col = pos_index[2];
+							face.c_tex = tex_index[2];
+							face.c_norm = norm_index[2];
 
-						face.has_parts = has_parts;
+							face.has_parts = has_parts;
 
-						tmp_face.push_back(face);
+							tmp_face.push_back(face);
+						}
 					}
 				}
-				
+
 				IO::output("Collected faces from file " + filename);
 
 				for (unsigned long face_id = 0; face_id < tmp_face.size(); face_id ++)
@@ -203,16 +207,16 @@ namespace LibVolume
 
 					this->polygons.push_back(poly);
 				}
-				
+
 				return true;
 			}
-			
+
 			void Mesh::buffer()
 			{
 				//Clear any existing memory before rebuffering
 				if (this->buffered)
 					gl::glDeleteVertexArrays(1, &this->gl_id);
-				
+
 				//Create the vertex array id and bind it
 				gl::glGenVertexArrays(1, &this->gl_id);
 				gl::glBindVertexArray(this->gl_id);

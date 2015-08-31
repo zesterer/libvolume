@@ -2,7 +2,7 @@
 #define LIBVOLUME_ENGINE_ACTOR_H
 
 //----LOCAL----
-#include "render/structures/mesh.h"
+#include "render/meshedobject.h"
 #include "render/rendertarget.h"
 #include "entity.h"
 
@@ -10,11 +10,9 @@ namespace LibVolume
 {
 	namespace Engine
 	{
-		class Actor : public Render::RenderTarget, public Entity
+		class Actor : public Render::RenderTarget, public Entity, public Render::MeshedObject
 		{
 			public:
-				Render::Structures::Mesh mesh;
-				
 				Actor();
 				virtual void tick() override;
 		};

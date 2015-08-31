@@ -133,7 +133,10 @@ namespace LibVolume
 
 			//Find the uniform model vector, then assign it
 			gl::GLuint model_matrix_id = gl::glGetUniformLocation(this->std_shader->gl_id, "MODEL_MATRIX");
-			gl::glUniformMatrix4fv(model_matrix_id, 1, gl::GL_FALSE, &actor->state.matrix[0][0]);
+			//Create the correct matrix
+			glm::mat4x4 sum = glm::mat4(1.0f);
+			sum = actor->state.matrix * actor->mesh_state.matrix * sum;
+			gl::glUniformMatrix4fv(model_matrix_id, 1, gl::GL_FALSE, &sum[0][0]);
 
 			//Find the material, then assign it
 			//glm::vec4 material_data = glm::vec4(material->shininess, material->specular_amount, material->specular_cap, 0.0);

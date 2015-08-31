@@ -50,6 +50,51 @@ vec4 getVector(vec4 vector)
 		return normalize(vector);
 }
 
+float getRandom(vec4 pos)
+{
+	float val = fract(sin(dot(pos, vec4(3.1415, 12.9898, 78.233, 5.327)))* 43758.5453);
+	return val;
+}
+
+float getNoise(vec4 pos, float octave)
+{
+	pos       *= pow(2.0, octave);
+	vec3 mpos  = mod(pos.xyz, 1.0);
+	pos        = floor(pos);
+
+	float c000  = getRandom(pos + vec4(0.0, 0.0, 0.0, 0.0));
+	float c100  = getRandom(pos + vec4(1.0, 0.0, 0.0, 0.0));
+	float c010  = getRandom(pos + vec4(0.0, 1.0, 0.0, 0.0));
+	float c110  = getRandom(pos + vec4(1.0, 1.0, 0.0, 0.0));
+
+	float c001  = getRandom(pos + vec4(0.0, 0.0, 1.0, 0.0));
+	float c101  = getRandom(pos + vec4(1.0, 0.0, 1.0, 0.0));
+	float c011  = getRandom(pos + vec4(0.0, 1.0, 1.0, 0.0));
+	float c111  = getRandom(pos + vec4(1.0, 1.0, 1.0, 0.0));
+
+	float eX00  = mix(c000, c100, mpos.x);
+	float eX10  = mix(c010, c110, mpos.x);
+	float eX01  = mix(c001, c101, mpos.x);
+	float eX11  = mix(c011, c111, mpos.x);
+
+	float fXX0  = mix(eX00, eX10, mpos.y);
+	float fXX1  = mix(eX01, eX11, mpos.y);
+
+	float value = mix(fXX0, fXX1, mpos.z);
+
+	return 2.0 * (value - 0.5);
+}
+
+float getPerlin(vec4 pos, float initial, float octaves, float skip)
+{
+	float val = 0.0;
+
+	for (float x = initial; x < initial + octaves; x += skip)
+		val += getNoise(pos, x + 2.0) / pow(2.0, x - initial);
+
+	return val;
+}
+
 void main()
 {
 	//Initialise the specular and diffuse
@@ -88,20 +133,22 @@ void main()
 		}
 	}
 
-	COLOUR = BUFFER_COLOUR * diffuse + specular;
+	float p = getPerlin(BUFFER_POSITION / 50.0, 1.0, 4.0, 1.0);
 
-	for (float x = -1.0; x < 1.0; x += 1.0)
+	COLOUR = (vec3(0.5, 0.0, 1.0) + BUFFER_COLOUR - vec3(p, p, p)) * diffuse + specular;
+
+	/*for (float x = -1.0; x < 1.0; x += 1.0)
 	{
 		for (float y = -1.0; y < 1.0; y += 1.0)
 		{
-			float dist = length(texture(POSITION_BUFFER, pos + vec2(x, y) * 0.005).rgb - BUFFER_POSITION.xyz);
+			float position_diff = length(texture(POSITION_BUFFER, pos + vec2(x, y) * 0.005).rgb - BUFFER_POSITION.xyz);
 
-			if (dist > 0.3)
-				COLOUR *= 0.7;
+			if (position_diff > 0.1 * length(BUFFER_POSITION.xyz))
+				COLOUR *= 0.5;
 		}
-	}
+	}*/
 
-	COLOUR = floor(COLOUR * 8.0) / 8.0;
+	COLOUR = floor(COLOUR * 16.0) / 16.0;
 
 	//Faded corners
 	COLOUR *= mix(vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), min(1, 1.5 - length(UV)));

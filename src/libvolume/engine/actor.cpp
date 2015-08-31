@@ -10,12 +10,13 @@ namespace LibVolume
 		{
 			this->renderable = true;
 			this->rendertype = Render::RenderType::Actor;
-			
+
 			IO::output("Created Actor");
 		}
-		
+
 		void Actor::tick()
 		{
+			this->mesh_state.tick();
 			Entity::tick();
 		}
 	}
