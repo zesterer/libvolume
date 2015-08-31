@@ -40,7 +40,7 @@ vec3 getTexture()
 	if (F_W_UV == vec2(-1.0, -1.0)) //If there's no texture
 		return F_W_COLOUR;
 	else //It's got a texture!
-		return F_W_COLOUR * texture(TEXTURE_SAMPLER, vec3(F_W_UV, 1.0)).rgb;
+		return F_W_COLOUR * texture(TEXTURE_SAMPLER, F_W_UV).rgb;
 }
 
 void main()
