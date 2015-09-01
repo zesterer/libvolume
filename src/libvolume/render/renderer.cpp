@@ -124,19 +124,22 @@ namespace LibVolume
 			}
 
 			//Find the uniform camera perspective matrix, then assign it
-			gl::GLuint perspective_matrix_id = gl::glGetUniformLocation(this->std_shader->gl_id, "PERSPECTIVE_MATRIX");
+			gl::GLuint perspective_matrix_id = gl::glGetUniformLocation(this->predeferred_shader->gl_id, "PERSPECTIVE_MATRIX");
 			gl::glUniformMatrix4fv(perspective_matrix_id, 1, gl::GL_FALSE, &this->camera->perspective_matrix[0][0]);
 
 			//Find the uniform camera matrix, then assign it
-			gl::GLuint camera_matrix_id = gl::glGetUniformLocation(this->std_shader->gl_id, "CAMERA_MATRIX");
+			gl::GLuint camera_matrix_id = gl::glGetUniformLocation(this->predeferred_shader->gl_id, "CAMERA_MATRIX");
 			gl::glUniformMatrix4fv(camera_matrix_id, 1, gl::GL_FALSE, &this->camera->matrix[0][0]);
 
 			//Find the uniform model vector, then assign it
-			gl::GLuint model_matrix_id = gl::glGetUniformLocation(this->std_shader->gl_id, "MODEL_MATRIX");
+			gl::GLuint model_matrix_id = gl::glGetUniformLocation(this->predeferred_shader->gl_id, "MODEL_MATRIX");
 			//Create the correct matrix
 			glm::mat4x4 sum = glm::mat4(1.0f);
 			sum = actor->state.matrix * actor->mesh_state.matrix * sum;
 			gl::glUniformMatrix4fv(model_matrix_id, 1, gl::GL_FALSE, &sum[0][0]);
+
+			//Find the uniform colour vector, then assign it
+			gl::glUniform3fv(gl::glGetUniformLocation(this->predeferred_shader->gl_id, "MESH_COLOUR"), 1, &actor->mesh.colour.x);
 
 			//Find the material, then assign it
 			//glm::vec4 material_data = glm::vec4(material->shininess, material->specular_amount, material->specular_cap, 0.0);
@@ -186,6 +189,11 @@ namespace LibVolume
 			gl::glActiveTexture(gl::GL_TEXTURE2);
 			gl::glUniform1i(colour_tex_id, 2);
 			gl::glBindTexture(gl::GL_TEXTURE_2D, this->gbuffer.colour_id);
+
+			gl::GLuint material_tex_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "MATERIAL_BUFFER");
+			gl::glActiveTexture(gl::GL_TEXTURE3);
+			gl::glUniform1i(material_tex_id, 3);
+			gl::glBindTexture(gl::GL_TEXTURE_2D, this->gbuffer.material_id);
 
 			//Find the uniform camera perspective matrix, then assign it
 			gl::GLuint perspective_matrix_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "PERSPECTIVE_MATRIX");

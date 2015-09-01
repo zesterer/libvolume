@@ -21,7 +21,7 @@ vec3 BUFFER_COLOUR;
 
 float getSpecular(vec4 vector)
 {
-	lowp float specular_shininess = 5.0;//MATERIAL_DATA[0];
+	lowp float specular_shininess = 2.0;//MATERIAL_DATA[0];
 	lowp float specular_amount = 0.3;//MATERIAL_DATA[1];
 	lowp float specular_cap = 2.0;//MATERIAL_DATA[2];
 
@@ -52,7 +52,7 @@ vec4 getVector(vec4 vector)
 
 float getRandom(vec4 pos)
 {
-	float val = fract(sin(dot(pos, vec4(3.1415, 12.9898, 78.233, 5.327)))* 43758.5453);
+	float val = fract(sin(dot(mod(pos, vec4(31.0, 51.0, 71.0, 39.0)), vec4(3.1415, 12.9898, 78.233, 5.327)))* 43758.5453);
 	return val;
 }
 
@@ -122,9 +122,6 @@ void main()
 			if (vector.w == 1.0) //Decrease brightness with distance
 			{
 				multiplier = min(1.0, 5.0 / pow(distance((BUFFER_POSITION).xyz, LIGHT_VECTOR[count].xyz), 1.5));
-
-				//Spotlight - WIP
-				//multiplier *= pow(1.05 * dot(normalize(vec3(1.0, 0.9, -2.5)), vector.xyz), 5.0);
 			}
 
 			//Add the light to the existing lighting conditions
@@ -133,9 +130,9 @@ void main()
 		}
 	}
 
-	float p = getPerlin(BUFFER_POSITION / 50.0, 1.0, 4.0, 1.0);
+	float p = 0.8 + getPerlin(BUFFER_POSITION / 500.0, 1.0, 4.0, 1.0) / 5.0;
 
-	COLOUR = (vec3(0.8, 0.26, 0.0) + BUFFER_COLOUR - vec3(p, p, p) * 0.3) * diffuse + specular;
+	COLOUR = BUFFER_COLOUR * p * diffuse + specular;
 
 	for (float x = -1.0; x < 1.0; x += 1.0)
 	{
@@ -143,12 +140,12 @@ void main()
 		{
 			float position_diff = length(texture(POSITION_BUFFER, pos + vec2(x, y) * 0.002).rgb - BUFFER_POSITION.xyz);
 
-			if (position_diff > 0.05 * length(BUFFER_POSITION.xyz))
-				COLOUR *= 0.5;
+			if (position_diff > 0.05 * length((CAMERA_MATRIX * BUFFER_POSITION).xyz))
+				COLOUR += vec3(0.2, 0.2, 0.2);
 		}
 	}
 
-	COLOUR = floor(COLOUR * 16.0) / 16.0;
+	//COLOUR = floor(COLOUR * 16.0) / 16.0;
 
 	//Faded corners
 	COLOUR *= mix(vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), min(1, 1.5 - length(UV)));

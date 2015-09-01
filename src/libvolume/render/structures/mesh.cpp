@@ -16,7 +16,7 @@ namespace LibVolume
 		{
 			Mesh::Mesh()
 			{
-
+				this->colour = glm::vec3(1.0, 1.0, 1.0);
 			}
 
 			bool Mesh::loadFromOBJ(std::string filename)

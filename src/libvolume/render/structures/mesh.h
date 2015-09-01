@@ -27,6 +27,8 @@ namespace LibVolume
 					gl::GLuint gl_id;
 					gl::GLenum mode = gl::GL_TRIANGLES;
 
+					glm::vec3 colour = glm::vec3(1.0, 1.0, 1.0);
+
 					Mesh();
 					bool loadFromOBJ(std::string filename);
 					void buffer();

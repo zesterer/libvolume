@@ -7,6 +7,8 @@ uniform   lowp    mat4      PERSPECTIVE_MATRIX;
 uniform   lowp    mat4      CAMERA_MATRIX;
 uniform   lowp    mat4      MODEL_MATRIX;
 
+uniform   lowp    vec3      MESH_COLOUR;
+
 uniform   lowp    vec4      LIGHT_VECTOR[16];
 uniform   lowp    vec4      LIGHT_COLOUR[16];
 
@@ -47,5 +49,5 @@ void main()
 {
 	POSITION_BUFFER = F_W_POSITION.xyz;
 	NORMAL_BUFFER = F_W_NORMAL.xyz;
-	COLOUR_BUFFER.rgb = getTexture();
+	COLOUR_BUFFER.rgb = MESH_COLOUR * getTexture();
 }
