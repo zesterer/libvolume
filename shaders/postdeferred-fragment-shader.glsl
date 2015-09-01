@@ -140,7 +140,7 @@ void main()
 		{
 			float position_diff = length(texture(POSITION_BUFFER, pos + vec2(x, y) * 0.002).rgb - BUFFER_POSITION.xyz);
 
-			if (position_diff > 0.05 * length((CAMERA_MATRIX * BUFFER_POSITION).xyz))
+			if (position_diff > 0.3 * length((CAMERA_MATRIX * BUFFER_POSITION).xyz))
 				COLOUR += vec3(0.2, 0.2, 0.2);
 		}
 	}
