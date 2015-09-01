@@ -15,9 +15,10 @@ const int LIGHT_NUMBER = 32;
 uniform lowp vec4 LIGHT_VECTOR[LIGHT_NUMBER];
 uniform lowp vec4 LIGHT_COLOUR[LIGHT_NUMBER];
 
-vec4 BUFFER_POSITION;
-vec4 BUFFER_NORMAL;
-vec3 BUFFER_COLOUR;
+vec4  BUFFER_POSITION;
+vec4  BUFFER_NORMAL;
+vec3  BUFFER_COLOUR;
+float CURRENT_DEPTH;
 
 float getSpecular(vec4 vector)
 {
@@ -95,6 +96,16 @@ float getPerlin(vec4 pos, float initial, float octaves, float skip)
 	return val;
 }
 
+float getDepth(vec2 pos)
+{
+	return length((CAMERA_MATRIX * texture(POSITION_BUFFER, pos)).xyz);
+}
+
+vec3 getNormal(vec2 pos)
+{
+	return normalize(texture(NORMAL_BUFFER, pos).xyz);
+}
+
 void main()
 {
 	//Initialise the specular and diffuse
@@ -105,8 +116,10 @@ void main()
 	//pos += 0.15 * vec2(getPerlin(vec4(UV / 6.0, 0.0, 0.0), 1.0, 3.0, 1.0), getPerlin(vec4(UV / 6.0, 0.0, 1.0), 1.0, 3.0, 1.0));
 
 	BUFFER_POSITION = vec4(texture(POSITION_BUFFER, pos).rgb, 1.0);
-	BUFFER_NORMAL = vec4(texture(NORMAL_BUFFER, pos).rgb, 0.0);
+	BUFFER_NORMAL = vec4(normalize(texture(NORMAL_BUFFER, pos).rgb), 0.0);
 	BUFFER_COLOUR = texture(COLOUR_BUFFER, pos).rgb;
+
+	CURRENT_DEPTH = getDepth(pos);
 
 	//Loop through all the lights
 	for (int count = 0; count < 16; count ++)
@@ -140,10 +153,26 @@ void main()
 		{
 			float position_diff = length(texture(POSITION_BUFFER, pos + vec2(x, y) * 0.002).rgb - BUFFER_POSITION.xyz);
 
-			if (position_diff > 0.3 * length((CAMERA_MATRIX * BUFFER_POSITION).xyz))
-				COLOUR += vec3(0.2, 0.2, 0.2);
+			if (position_diff > 0.3 * CURRENT_DEPTH)
+				COLOUR += 0.25;
 		}
 	}
+
+	//Hacked together SSAO
+	/*float totaldepth = 0.0;
+	for (float x = -1.0; x < 1.0; x += 0.5)
+	{
+		for (float y = -1.0; y < 1.0; y += 0.5)
+		{
+			float diff = CURRENT_DEPTH - getDepth(pos + (CAMERA_MATRIX * BUFFER_NORMAL).xy * 0.02);
+			if (diff > 100.0 || diff < 0.0)
+				diff = 0.0;
+			diff = diff + (50.0 * dot(-getNormal(pos + (CAMERA_MATRIX * BUFFER_NORMAL).xy * 0.02), getNormal(pos)));
+			totaldepth += diff;
+		}
+	}
+	totaldepth = 1.0 - min(max(totaldepth * 0.002, 0.0), 0.6);
+	COLOUR *= totaldepth;*/
 
 	//COLOUR = floor(COLOUR * 16.0) / 16.0;
 

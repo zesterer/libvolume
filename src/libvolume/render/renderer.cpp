@@ -106,11 +106,11 @@ namespace LibVolume
 			//IO::output("Rendering Actor...");
 
 			//Buffer the mesh if it's not already been done
-			if (!actor->mesh.buffered)
-				actor->mesh.buffer();
+			if (!actor->mesh->buffered)
+				actor->mesh->buffer();
 
 			//Bind the vertex buffer
-			gl::glBindBuffer(gl::GL_ARRAY_BUFFER, actor->mesh.gl_id);
+			gl::glBindBuffer(gl::GL_ARRAY_BUFFER, actor->mesh->gl_id);
 
 			//Tell the shaders what different parts of the buffer mean using the above array
 			//What is the buffer array composed of?
@@ -139,7 +139,7 @@ namespace LibVolume
 			gl::glUniformMatrix4fv(model_matrix_id, 1, gl::GL_FALSE, &sum[0][0]);
 
 			//Find the uniform colour vector, then assign it
-			gl::glUniform3fv(gl::glGetUniformLocation(this->predeferred_shader->gl_id, "MESH_COLOUR"), 1, &actor->mesh.colour.x);
+			gl::glUniform3fv(gl::glGetUniformLocation(this->predeferred_shader->gl_id, "MESH_COLOUR"), 1, &actor->mesh->colour.x);
 
 			//Find the material, then assign it
 			//glm::vec4 material_data = glm::vec4(material->shininess, material->specular_amount, material->specular_cap, 0.0);
@@ -149,7 +149,7 @@ namespace LibVolume
 			//glUniform1i(glGetUniformLocation(this->std_shader->gl_id, "MATERIAL_EFFECTS"), material->effects);
 
 			//Draw the model
-			gl::glDrawArrays(actor->mesh.mode, 0, actor->mesh.polygons.size() * 3);
+			gl::glDrawArrays(actor->mesh->mode, 0, actor->mesh->polygons.size() * 3);
 
 			//Disable all the vertex attribute arrays again
 			for (int count = 0; count < 4; count ++)

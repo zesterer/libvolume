@@ -12,8 +12,10 @@ namespace LibVolume
 		class MeshedObject
 		{
 			public:
-				Structures::Mesh mesh;
+				Structures::Mesh* mesh;
 				Engine::Physics::DynamicState mesh_state;
+
+				MeshedObject();
 		};
 	}
 }
