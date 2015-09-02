@@ -154,7 +154,7 @@ namespace LibVolume
 			if (glm::abs(d1 - d2) < 0.00001)
 				return p1;*/
 
-			if (abs(d2 - d1) < 0.0001)
+			if (std::abs(d2 - d1) < 0.0001)
 				p = glm::mix(p1, p2, 0.5);
 			else
 			{
