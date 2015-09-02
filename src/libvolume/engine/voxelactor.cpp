@@ -83,14 +83,14 @@ namespace LibVolume
 
 						//Find the configuration index based on surrounding voxels
 						unsigned char index = 0;
-						if (this->getAt(count + glm::ivec3(0, 0, 0))->density > 0.0) index |= 0b00000001;
-						if (this->getAt(count + glm::ivec3(1, 0, 0))->density > 0.0) index |= 0b00000010;
-						if (this->getAt(count + glm::ivec3(1, 1, 0))->density > 0.0) index |= 0b00000100;
-						if (this->getAt(count + glm::ivec3(0, 1, 0))->density > 0.0) index |= 0b00001000;
-						if (this->getAt(count + glm::ivec3(0, 0, 1))->density > 0.0) index |= 0b00010000;
-						if (this->getAt(count + glm::ivec3(1, 0, 1))->density > 0.0) index |= 0b00100000;
-						if (this->getAt(count + glm::ivec3(1, 1, 1))->density > 0.0) index |= 0b01000000;
-						if (this->getAt(count + glm::ivec3(0, 1, 1))->density > 0.0) index |= 0b10000000;
+						if (this->getAt(count + glm::ivec3(0, 0, 0))->density > this->threshold) index |= 0b00000001;
+						if (this->getAt(count + glm::ivec3(1, 0, 0))->density > this->threshold) index |= 0b00000010;
+						if (this->getAt(count + glm::ivec3(1, 1, 0))->density > this->threshold) index |= 0b00000100;
+						if (this->getAt(count + glm::ivec3(0, 1, 0))->density > this->threshold) index |= 0b00001000;
+						if (this->getAt(count + glm::ivec3(0, 0, 1))->density > this->threshold) index |= 0b00010000;
+						if (this->getAt(count + glm::ivec3(1, 0, 1))->density > this->threshold) index |= 0b00100000;
+						if (this->getAt(count + glm::ivec3(1, 1, 1))->density > this->threshold) index |= 0b01000000;
+						if (this->getAt(count + glm::ivec3(0, 1, 1))->density > this->threshold) index |= 0b10000000;
 
 						float density_cube[2][2][2];
 						density_cube[0][0][0] = this->getAt(count + glm::ivec3(0, 0, 0))->density;

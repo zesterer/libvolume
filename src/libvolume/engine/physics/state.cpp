@@ -44,14 +44,14 @@ namespace LibVolume
 
 			void DynamicState::tick()
 			{
+				this->update();
+
 				this->position += this->velocity;
 
 				//Normalise the quaternions (or they will gradually decay)
 				normalize(this->spin);
 
 				this->orientation = this->spin * this->orientation;
-
-				this->update();
 			}
 		}
 	}

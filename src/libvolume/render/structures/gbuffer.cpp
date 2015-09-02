@@ -18,7 +18,7 @@ namespace LibVolume
 				//Position texture
 				gl::glGenTextures(1, &this->position_id);
 				gl::glBindTexture(gl::GL_TEXTURE_2D, this->position_id);
-				gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, (gl::GLuint)gl::GL_RGB16F, 640, 480, 0, gl::GL_RGB, gl::GL_FLOAT, NULL);
+				gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, (gl::GLuint)gl::GL_RGBA32F, 640, 480, 0, gl::GL_RGB, gl::GL_FLOAT, NULL);
 				gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MIN_FILTER, (gl::GLuint)gl::GL_NEAREST);
 				gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MAG_FILTER, (gl::GLuint)gl::GL_NEAREST);
 				gl::glFramebufferTexture2D(gl::GL_FRAMEBUFFER, gl::GL_COLOR_ATTACHMENT0, gl::GL_TEXTURE_2D, this->position_id, 0);

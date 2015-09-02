@@ -5,9 +5,12 @@ namespace LibVolume
 {
 	namespace Render
 	{
-		MeshedObject::MeshedObject()
+		MeshedObject::MeshedObject(Structures::Mesh* mesh)
 		{
-			this->mesh = new Structures::Mesh();
+			if (mesh == nullptr)
+				this->mesh = new Structures::Mesh();
+			else
+				this->mesh = mesh;
 		}
 	}
 }

@@ -15,7 +15,7 @@ namespace LibVolume
 				Structures::Mesh* mesh;
 				Engine::Physics::DynamicState mesh_state;
 
-				MeshedObject();
+				MeshedObject(Structures::Mesh* mesh = nullptr);
 		};
 	}
 }

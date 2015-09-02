@@ -6,7 +6,7 @@ namespace LibVolume
 {
 	namespace Engine
 	{
-		Actor::Actor()
+		Actor::Actor(Render::Structures::Mesh* mesh) : Render::MeshedObject(mesh)
 		{
 			this->renderable = true;
 			this->rendertype = Render::RenderType::Actor;

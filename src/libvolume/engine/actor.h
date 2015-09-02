@@ -13,7 +13,7 @@ namespace LibVolume
 		class Actor : public Render::RenderTarget, public Entity, public Render::MeshedObject
 		{
 			public:
-				Actor();
+				Actor(Render::Structures::Mesh* mesh = nullptr);
 				virtual void tick() override;
 		};
 	}

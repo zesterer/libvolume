@@ -7,18 +7,18 @@ out vec3 COLOUR;
 uniform mat4 PERSPECTIVE_MATRIX;
 uniform mat4 CAMERA_MATRIX;
 
-uniform sampler2D POSITION_BUFFER;
-uniform sampler2D NORMAL_BUFFER;
-uniform sampler2D COLOUR_BUFFER;
+uniform highp sampler2D POSITION_BUFFER;
+uniform highp sampler2D NORMAL_BUFFER;
+uniform highp sampler2D COLOUR_BUFFER;
 
 const int LIGHT_NUMBER = 32;
 uniform lowp vec4 LIGHT_VECTOR[LIGHT_NUMBER];
 uniform lowp vec4 LIGHT_COLOUR[LIGHT_NUMBER];
 
-vec4  BUFFER_POSITION;
-vec4  BUFFER_NORMAL;
-vec3  BUFFER_COLOUR;
-float CURRENT_DEPTH;
+highp vec4  BUFFER_POSITION;
+lowp vec4  BUFFER_NORMAL;
+lowp vec3  BUFFER_COLOUR;
+highp float CURRENT_DEPTH;
 
 float getSpecular(vec4 vector)
 {
@@ -53,7 +53,7 @@ vec4 getVector(vec4 vector)
 
 float getRandom(vec4 pos)
 {
-	float val = fract(sin(dot(mod(pos, vec4(31.0, 51.0, 71.0, 39.0)), vec4(3.1415, 12.9898, 78.233, 5.327)))* 43758.5453);
+	float val = fract(sin(dot(pos, vec4(3.1415, 12.9898, 78.233, 5.327)))* 43758.5453);
 	return val;
 }
 
@@ -143,7 +143,7 @@ void main()
 		}
 	}
 
-	float p = 0.8 + getPerlin(BUFFER_POSITION / 500.0, 1.0, 4.0, 1.0) / 5.0;
+	float p = 1.0;//0.8 + getPerlin(BUFFER_POSITION / 500.0, 1.0, 4.0, 1.0) / 5.0;
 
 	COLOUR = BUFFER_COLOUR * p * diffuse + specular;
 
@@ -153,7 +153,7 @@ void main()
 		{
 			float position_diff = length(texture(POSITION_BUFFER, pos + vec2(x, y) * 0.002).rgb - BUFFER_POSITION.xyz);
 
-			if (position_diff > 0.3 * CURRENT_DEPTH)
+			if (position_diff > 0.1 * CURRENT_DEPTH)
 				COLOUR += 0.25;
 		}
 	}

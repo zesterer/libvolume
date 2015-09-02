@@ -26,9 +26,9 @@ smooth in highp   vec4      F_M_MODEL_POSITION;
 smooth in lowp    vec4      F_M_MODEL_NORMAL;
 
 //----OUTPUTS----
-layout (location = 0) out vec3 POSITION_BUFFER;
-layout (location = 1) out vec3 NORMAL_BUFFER;
-layout (location = 2) out vec4 COLOUR_BUFFER;
+layout (location = 0) out highp vec4 POSITION_BUFFER;
+layout (location = 1) out lowp vec3 NORMAL_BUFFER;
+layout (location = 2) out lowp vec4 COLOUR_BUFFER;
 
 vec3 getTexture()
 {
@@ -47,7 +47,7 @@ vec3 getTexture()
 
 void main()
 {
-	POSITION_BUFFER = F_W_POSITION.xyz;
+	POSITION_BUFFER = vec4(F_W_POSITION.xyz, 0);
 	NORMAL_BUFFER = F_W_NORMAL.xyz;
 	if (F_W_COLOUR != vec3(1.0, 1.0, 1.0))
 		COLOUR_BUFFER.rgb = F_W_COLOUR.rgb;

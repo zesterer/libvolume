@@ -43,7 +43,7 @@ namespace LibVolume
 		void Realm::postTick()
 		{
 			//Time in seconds
-			this->time += 1.0;
+			this->time += 1;
 		}
 
 		void Realm::render()
