@@ -19,7 +19,7 @@ namespace LibVolume
 				this->colour = glm::vec3(1.0, 1.0, 1.0);
 			}
 
-			bool Mesh::loadFromOBJ(std::string filename)
+			bool Mesh::loadFromOBJ(std::string filename, bool recalc_normals)
 			{
 				//Clear the polygon vector ready for new data
 				this->polygons.clear();
@@ -183,7 +183,7 @@ namespace LibVolume
 					}
 
 					//We got normals!
-					if ((face.has_parts & 0b00100000) == 0b00100000 && true) //If we have normal data
+					if ((face.has_parts & 0b00100000) == 0b00100000 && !recalc_normals) //If we have normal data
 					{
 						//Set to default normals
 						poly.a.normal = tmp_norm[face.a_norm - 1];

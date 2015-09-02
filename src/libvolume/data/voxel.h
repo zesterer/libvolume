@@ -8,11 +8,11 @@ namespace LibVolume
 		struct Voxel
 		{
 			public:
-				int type;
-				float density;
-				
+				int type = 0;
+				float density = 0.0f;
+
 				void* metadata;
-			
+
 				int getType();
 				float getDensity();
 				void* getMeta();

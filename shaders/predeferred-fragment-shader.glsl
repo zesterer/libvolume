@@ -49,5 +49,8 @@ void main()
 {
 	POSITION_BUFFER = F_W_POSITION.xyz;
 	NORMAL_BUFFER = F_W_NORMAL.xyz;
-	COLOUR_BUFFER.rgb = MESH_COLOUR * getTexture();
+	if (F_W_COLOUR != vec3(1.0, 1.0, 1.0))
+		COLOUR_BUFFER.rgb = F_W_COLOUR.rgb;
+	else
+		COLOUR_BUFFER.rgb = MESH_COLOUR;
 }
