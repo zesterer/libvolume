@@ -1,5 +1,6 @@
 //----LOCAL----
 #include "voxelactor.h"
+#include "common/io.h"
 
 namespace LibVolume
 {
@@ -92,15 +93,24 @@ namespace LibVolume
 						if (this->getAt(count + glm::ivec3(1, 1, 1))->density > this->threshold) index |= 0b01000000;
 						if (this->getAt(count + glm::ivec3(0, 1, 1))->density > this->threshold) index |= 0b10000000;
 
-						float density_cube[2][2][2];
-						density_cube[0][0][0] = this->getAt(count + glm::ivec3(0, 0, 0))->density;
+						float density_cube[8];
+						density_cube[0b000] = this->getAt(count + glm::ivec3(0, 0, 0))->density;
+						density_cube[0b001] = this->getAt(count + glm::ivec3(0, 0, 1))->density;
+						density_cube[0b010] = this->getAt(count + glm::ivec3(0, 1, 0))->density;
+						density_cube[0b011] = this->getAt(count + glm::ivec3(0, 1, 1))->density;
+						density_cube[0b100] = this->getAt(count + glm::ivec3(1, 0, 0))->density;
+						density_cube[0b101] = this->getAt(count + glm::ivec3(1, 0, 1))->density;
+						density_cube[0b110] = this->getAt(count + glm::ivec3(1, 1, 0))->density;
+						density_cube[0b111] = this->getAt(count + glm::ivec3(1, 1, 1))->density;
+
+						/*density_cube[0][0][0] = this->getAt(count + glm::ivec3(0, 0, 0))->density;
 						density_cube[1][0][0] = this->getAt(count + glm::ivec3(0, 0, 1))->density;
 						density_cube[1][1][0] = this->getAt(count + glm::ivec3(0, 1, 0))->density;
 						density_cube[0][1][0] = this->getAt(count + glm::ivec3(0, 1, 1))->density;
 						density_cube[0][0][1] = this->getAt(count + glm::ivec3(1, 0, 0))->density;
 						density_cube[1][0][1] = this->getAt(count + glm::ivec3(1, 0, 1))->density;
 						density_cube[1][1][1] = this->getAt(count + glm::ivec3(1, 1, 0))->density;
-						density_cube[0][1][1] = this->getAt(count + glm::ivec3(1, 1, 1))->density;
+						density_cube[0][1][1] = this->getAt(count + glm::ivec3(1, 1, 1))->density;*/
 
 						if (index != 0 && index != 255) //Make sure it's not fully empty or fully filled
 						{
@@ -135,42 +145,7 @@ namespace LibVolume
 			}
 		}
 
-		glm::vec3 VoxelActor::getInterp(int edge, float density[2][2][2])
-		{
-			glm::vec3 p1 = MC_EDGES[edge][0];
-			glm::vec3 p2 = MC_EDGES[edge][1];
-
-			float d1 = density[MC_INTEDGES[edge][0].x][MC_INTEDGES[edge][0].y][MC_INTEDGES[edge][0].z];
-			float d2 = density[MC_INTEDGES[edge][1].x][MC_INTEDGES[edge][1].y][MC_INTEDGES[edge][1].z];
-
-			float isolevel = 0.5;
-			float mu;
-			glm::vec3 p;
-
-			/*if (abs(isolevel - d1) < 0.00001)
-				return p1;
-			if (abs(isolevel - d2) < 0.00001)
-				return p2;
-			if (glm::abs(d1 - d2) < 0.00001)
-				return p1;*/
-
-			if (std::abs(d2 - d1) < 0.0001)
-				p = glm::mix(p1, p2, 0.5);
-			else
-			{
-				mu = (isolevel - d1) / (d2 + d1);
-				//mu = 0.5;
-				p.x = p1.x + mu * (p2.x - p1.x);
-				p.y = p1.y + mu * (p2.y - p1.y);
-				p.z = p1.z + mu * (p2.z - p1.z);
-			}
-
-			//IO::output("x=" + to_string(p1.x) + " y=" + to_string(p2.x) + " z=" + to_string(p.x) + " mu=" + to_string(mu));
-
-			return p;
-		}
-
-		std::vector<Render::Structures::Polygon> VoxelActor::getMarchingCubesPolygonConfiguration(unsigned char index, float density[2][2][2], bool use_density)
+		std::vector<Render::Structures::Polygon> VoxelActor::getMarchingCubesPolygonConfiguration(unsigned char index, float density[8], bool use_density)
 		{
 			std::vector<Render::Structures::Polygon> polygons;
 			int triangles[16];
@@ -188,11 +163,16 @@ namespace LibVolume
 				{
 					Render::Structures::Polygon poly;
 
-					if (use_density)
+					if (!use_density)
 					{
-						poly.c.position = this->getInterp(triangles[c + 0], density);
-						poly.b.position = this->getInterp(triangles[c + 1], density);
-						poly.a.position = this->getInterp(triangles[c + 2], density);
+						poly.c.position = glm::mix(MC_EDGES[triangles[c + 0]][0], MC_EDGES[triangles[c + 0]][1], 0.5);
+						poly.b.position = glm::mix(MC_EDGES[triangles[c + 1]][0], MC_EDGES[triangles[c + 1]][1], 0.5);
+						poly.a.position = glm::mix(MC_EDGES[triangles[c + 2]][0], MC_EDGES[triangles[c + 2]][1], 0.5);
+
+						//poly.c.position = this->getInterp(triangles[c + 0], density);
+						//poly.b.position = this->getInterp(triangles[c + 1], density);
+						//poly.a.position = this->getInterp(triangles[c + 2], density);
+
 						//poly.b.pos = this->getInterp(MC_EDGES[triangles[c + 1]][0], MC_EDGES[triangles[c + 1]][1], density[MC_EDGE2VERTEX[triangles[c + 1]][0]], density[MC_EDGE2VERTEX[triangles[c + 1]][1]]);
 						//	poly.a.pos = this->getInterp(MC_EDGES[triangles[c + 2]][0], MC_EDGES[triangles[c + 2]][1], density[MC_EDGE2VERTEX[triangles[c + 2]][0]], density[MC_EDGE2VERTEX[triangles[c + 2]][1]]);
 
@@ -202,9 +182,13 @@ namespace LibVolume
 					}
 					else
 					{
-						poly.c.position = glm::mix(MC_EDGES[triangles[c + 0]][0], MC_EDGES[triangles[c + 0]][1], 0.5);
-						poly.b.position = glm::mix(MC_EDGES[triangles[c + 1]][0], MC_EDGES[triangles[c + 1]][1], 0.5);
-						poly.a.position = glm::mix(MC_EDGES[triangles[c + 2]][0], MC_EDGES[triangles[c + 2]][1], 0.5);
+						float x;
+						x = (this->threshold - density[MC_EDGES_TO_INT[triangles[c + 0]][0]]) / (density[MC_EDGES_TO_INT[triangles[c + 0]][1]] - density[MC_EDGES_TO_INT[triangles[c + 0]][0]]);
+						poly.c.position = glm::mix(MC_EDGES[triangles[c + 0]][0], MC_EDGES[triangles[c + 0]][1], x);
+						x = (this->threshold - density[MC_EDGES_TO_INT[triangles[c + 1]][0]]) / (density[MC_EDGES_TO_INT[triangles[c + 1]][1]] - density[MC_EDGES_TO_INT[triangles[c + 1]][0]]);
+						poly.b.position = glm::mix(MC_EDGES[triangles[c + 1]][0], MC_EDGES[triangles[c + 1]][1], x);
+						x = (this->threshold - density[MC_EDGES_TO_INT[triangles[c + 2]][0]]) / (density[MC_EDGES_TO_INT[triangles[c + 2]][1]] - density[MC_EDGES_TO_INT[triangles[c + 2]][0]]);
+						poly.a.position = glm::mix(MC_EDGES[triangles[c + 2]][0], MC_EDGES[triangles[c + 2]][1], x);
 					}
 
 					poly.a.colour = glm::vec3(1.0, 1.0, 1.0);

@@ -26,9 +26,8 @@ namespace LibVolume
 				VoxelActor(glm::ivec3 size);
 				void extractCubic();
 				void addQuad(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 d);
-				void extractMarchingCubes(bool use_density = false);
-				glm::vec3 getInterp(int edge, float density[2][2][2]);
-				std::vector<Render::Structures::Polygon> getMarchingCubesPolygonConfiguration(unsigned char index, float density[2][2][2], bool use_density);
+				void extractMarchingCubes(bool use_density = true);
+				std::vector<Render::Structures::Polygon> getMarchingCubesPolygonConfiguration(unsigned char index, float density[8], bool use_density);
 		};
 	}
 }

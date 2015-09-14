@@ -147,6 +147,9 @@ void main()
 
 	COLOUR = BUFFER_COLOUR * p * diffuse + specular;
 
+	if (BUFFER_POSITION.xyz == vec3(0.0, 0.0, 0.0))
+		COLOUR = vec3(0.0, 0.0, 0.0);
+
 	for (float x = -1.0; x < 1.0; x += 1.0)
 	{
 		for (float y = -1.0; y < 1.0; y += 1.0)

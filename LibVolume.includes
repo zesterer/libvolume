@@ -1,0 +1,8 @@
+build-win64/src
+src/libvolume/common
+src/libvolume/data
+src/libvolume/engine
+src/libvolume/engine/physics
+src/libvolume/render
+src/libvolume/render/structures
+src/libvolume/window

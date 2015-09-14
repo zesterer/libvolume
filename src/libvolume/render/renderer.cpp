@@ -72,7 +72,7 @@ namespace LibVolume
 			}
 
 			//Blank the screen
-			gl::glClearColor(0.7f, 0.7f, 0.9f, 0.0f);
+			gl::glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 			if (render_mode == RenderMode::PostDeferred)
 			{

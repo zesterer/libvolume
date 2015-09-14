@@ -36,19 +36,20 @@ vec3 getTexture()
 	//return mix(vec3(0.7, 0.35, 0.05), vec3(0.0, 1.0, 0.0), dot((normalize(MODEL_MATRIX * F_W_NORMAL)).xyz, vec3(0.0, 0.0, 1.0)));
 
 	//No proper texture has been loaded in, so revert to colours
-	if (textureSize(TEXTURE_SAMPLER, 0) == ivec2(1, 1))
+	/*if (textureSize(TEXTURE_SAMPLER, 0) == ivec2(1, 1))
 		return F_W_COLOUR;
 
 	if (F_W_UV == vec2(-1.0, -1.0)) //If there's no texture
 		return F_W_COLOUR;
 	else //It's got a texture!
-		return F_W_COLOUR * texture(TEXTURE_SAMPLER, F_W_UV).rgb;
+		return F_W_COLOUR * texture(TEXTURE_SAMPLER, F_W_UV).rgb;*/
 }
 
 void main()
 {
-	POSITION_BUFFER = vec4(F_W_POSITION.xyz, 0);
+	POSITION_BUFFER = F_W_POSITION;
 	NORMAL_BUFFER = F_W_NORMAL.xyz;
+
 	if (F_W_COLOUR != vec3(1.0, 1.0, 1.0))
 		COLOUR_BUFFER.rgb = F_W_COLOUR.rgb;
 	else
