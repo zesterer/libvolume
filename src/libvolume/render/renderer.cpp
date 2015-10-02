@@ -40,64 +40,69 @@ namespace LibVolume
 			gl::glEnable(gl::GL_DEPTH_TEST);
 			gl::glDepthFunc(gl::GL_LESS);
 
-			// Render to our framebuffer
-			if (render_mode == RenderMode::PreDeferred)
+			//Switch framebuffer targets & enable shader
+			switch (render_mode)
 			{
-				gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, this->gbuffer.gbuffer_id);
-				gl::glViewport(0, 0, this->event_manager->window_size_state.width, this->event_manager->window_size_state.height);
-			}
-			else if (render_mode == RenderMode::PostDeferred)
-			{
-				gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, 0);
-				gl::glViewport(0, 0, this->event_manager->window_size_state.width, this->event_manager->window_size_state.height);
-			}
-			else
-			{
-				gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, 0);
-				gl::glViewport(0, 0, this->event_manager->window_size_state.width, this->event_manager->window_size_state.height);
-			}
+				case (RenderMode::PreDeferred):
+				{
+					gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, this->gbuffer.gbuffer_id);
+					gl::glViewport(0, 0, this->event_manager->window_size_state.width, this->event_manager->window_size_state.height);
+					this->predeferred_shader->enable();
+				}
+				break;
 
-			//Enable the shader
-			if (render_mode == RenderMode::PreDeferred)
-			{
-				this->predeferred_shader->enable();
-			}
-			else if (render_mode == RenderMode::PostDeferred)
-			{
-				this->postdeferred_shader->enable();
-			}
-			else
-			{
-				this->std_shader->enable();
+				case (RenderMode::PostDeferred):
+				{
+					gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, 0);
+					gl::glViewport(0, 0, this->event_manager->window_size_state.width, this->event_manager->window_size_state.height);
+					this->postdeferred_shader->enable();
+				}
+				break;
+
+				default:
+				{
+					gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, 0);
+					gl::glViewport(0, 0, this->event_manager->window_size_state.width, this->event_manager->window_size_state.height);
+					this->std_shader->enable();
+				}
+				break;
 			}
 
 			//Blank the screen
 			gl::glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-			if (render_mode == RenderMode::PostDeferred)
+			switch(render_mode)
 			{
-				gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
-			}
-			else
-			{
-				gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
+				case (RenderMode::PostDeferred):
+				{
+					gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
+				}
+				break;
+
+				default:
+				{
+					gl::glClear(gl::GL_COLOR_BUFFER_BIT | gl::GL_DEPTH_BUFFER_BIT);
+				}
+				break;
 			}
 		}
 
 		void Renderer::renderTarget(RenderTarget* target)
 		{
-			//Render a render target
-			//IO::output("Rendering target...");
+			switch(target->rendertype)
+			{
+				case (RenderType::Actor):
+				{
+					//IO::output("Target is an instance of Engine::Actor");
+					this->renderActor(dynamic_cast<Engine::Actor*>(target));
+				}
+				break;
 
-			//TODO
-			if (target->rendertype == RenderType::Actor || true)
-			{
-				//IO::output("Target is an instance of Engine::Actor");
-				this->renderActor(dynamic_cast<Engine::Actor*>(target));
-			}
-			else if(target->rendertype == RenderType::None)
-			{
-				//IO::output("Target isn't an actor");
+				default:
+				{
+					IO::output("Target isn't an actor");
+				}
+				break;
 			}
 		}
 
@@ -133,7 +138,9 @@ namespace LibVolume
 
 			//Find the uniform model vector, then assign it
 			gl::GLuint model_matrix_id = gl::glGetUniformLocation(this->predeferred_shader->gl_id, "MODEL_MATRIX");
-			//Create the correct matrix
+
+			//Create the correct cumulative matrix from the entity state and the mesh state
+			//NP: Why is this done in realtime? Not a slowdown atm because all entities are ticked every frame. Maybe add sleeping system 4 lower cpu?
 			glm::mat4x4 sum = glm::mat4(1.0f);
 			sum = actor->state.matrix * actor->mesh_state.matrix * sum;
 			gl::glUniformMatrix4fv(model_matrix_id, 1, gl::GL_FALSE, &sum[0][0]);
@@ -141,6 +148,7 @@ namespace LibVolume
 			//Find the uniform colour vector, then assign it
 			gl::glUniform3fv(gl::glGetUniformLocation(this->predeferred_shader->gl_id, "MESH_COLOUR"), 1, &actor->mesh->colour.x);
 
+			//TODO: Build materials system that is passed via deferred shader. Could allow for normal texturing or different phong model?
 			//Find the material, then assign it
 			//glm::vec4 material_data = glm::vec4(material->shininess, material->specular_amount, material->specular_cap, 0.0);
 			//GLuint material_id = glGetUniformLocation(this->std_shader->gl_id, "MATERIAL_DATA");
@@ -154,8 +162,6 @@ namespace LibVolume
 			//Disable all the vertex attribute arrays again
 			for (int count = 0; count < 4; count ++)
 				gl::glDisableVertexAttribArray(count);
-
-			//IO::output("Rendered Actor");
 		}
 
 		void Renderer::postRender(RenderMode render_mode)
@@ -166,30 +172,37 @@ namespace LibVolume
 			gl::glDisable(gl::GL_CULL_FACE);
 
 			//Disable the depth buffer
+			//Not absolutely necessary, but may become useful in the future
 			gl::glDisable(gl::GL_DEPTH_TEST);
 			gl::glDepthFunc(gl::GL_NONE);
 
+			//Obvious. Bind the bi-polygon array buffer ready for vertex shader passing
 			gl::glBindBuffer(gl::GL_ARRAY_BUFFER, this->gl_quad_id);
 
 			//Tell the shaders what different parts of the buffer mean using the above array
 			gl::glEnableVertexAttribArray(0);
 			gl::glVertexAttribPointer(0, 3, gl::GL_FLOAT, gl::GL_FALSE, sizeof(gl::GLfloat) * 3, (void*)(unsigned long)0);
 
+			//Get the position buffer texture ready for rendering
 			gl::GLuint position_tex_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "POSITION_BUFFER");
 			gl::glActiveTexture(gl::GL_TEXTURE0);
 			gl::glUniform1i(position_tex_id, 0);
 			gl::glBindTexture(gl::GL_TEXTURE_2D, this->gbuffer.position_id);
 
+			//Get the normal buffer texture ready for rendering
 			gl::GLuint normal_tex_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "NORMAL_BUFFER");
 			gl::glActiveTexture(gl::GL_TEXTURE1);
 			gl::glUniform1i(normal_tex_id, 1);
 			gl::glBindTexture(gl::GL_TEXTURE_2D, this->gbuffer.normal_id);
 
+			//Get the colour buffer texture ready for rendering
 			gl::GLuint colour_tex_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "COLOUR_BUFFER");
 			gl::glActiveTexture(gl::GL_TEXTURE2);
 			gl::glUniform1i(colour_tex_id, 2);
 			gl::glBindTexture(gl::GL_TEXTURE_2D, this->gbuffer.colour_id);
 
+			//Get the material buffer texture ready for rendering
+			//TODO: This doesn't actually exist yet, since there's not material input
 			gl::GLuint material_tex_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "MATERIAL_BUFFER");
 			gl::glActiveTexture(gl::GL_TEXTURE3);
 			gl::glUniform1i(material_tex_id, 3);
@@ -203,10 +216,15 @@ namespace LibVolume
 			gl::GLuint camera_matrix_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "CAMERA_MATRIX");
 			gl::glUniformMatrix4fv(camera_matrix_id, 1, gl::GL_FALSE, &this->camera->matrix[0][0]);
 
+			//Not currently done, since calculated from position. Potentially wasteful, since distance in fragment
+			// shader, but not too much of a problem since only calculated per-pixel, not per-fragment due to deferring
 			//GLuint depth_id = glGetUniformLocation(framebuffer->shader->gl_id, "RENDER_DEPTH");
 			//glUniform1i(depth_id, 0);
 			//glBindTexture(GL_TEXTURE_2D, framebuffer->gl_depth_id);
 
+			//Assign the lighting data for use in the fragment shader
+			//Doesn't actually take full advantage of deferred shading yet
+			// since lights are still passed in array without selective sphere rendering
 			this->assignLights();
 
 			gl::glDrawArrays(gl::GL_TRIANGLES, 0, sizeof(gl::GLfloat) * 6 * 3);
@@ -232,13 +250,15 @@ namespace LibVolume
 				light_colour_array[light] = glm::vec4(clight->colour, clight->ambiance);
 			}
 
+			//Assign the lighting array. Maximum of 16 lights at the moment
 			gl::glUniform4fv(gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "LIGHT_VECTOR"), 16 * 4, &light_vector_array[0].x);
 			gl::glUniform4fv(gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "LIGHT_COLOUR"), 16 * 4, &light_colour_array[0].x);
 		}
 
-		void Renderer::setEventManager(Window::EventManager* event_manager)
+		void Renderer::linkTo(Window::Window& window)
 		{
-			this->event_manager = event_manager;
+			//Link the event managers so this renderer can grab input from the window
+			this->event_manager = &window.event_manager;
 		}
 
 		void Renderer::bufferScreenQuad()
@@ -247,6 +267,7 @@ namespace LibVolume
 			gl::glGenVertexArrays(1, &this->gl_quad_id);
 			gl::glBindVertexArray(this->gl_quad_id);
 
+			//The bi-polygon array for deferred rendering
 			const gl::GLfloat gl_quad_data[] =
 			{
 				-1.0, -1.0,  0.0,

@@ -10,6 +10,7 @@
 #include "camera.h"
 #include "window/eventmanager.h"
 #include "render/structures/light.h"
+#include "window/window.h"
 
 namespace LibVolume
 {
@@ -34,7 +35,9 @@ namespace LibVolume
 				void tick();
 				void postTick();
 				void render();
-				void setEventManager(Window::EventManager* event_manager);
+				void linkTo(Window::Window& window);
+				void addObject(Object& light);
+				void addLight(Render::Structures::Light& light);
 		};
 	}
 }

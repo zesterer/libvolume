@@ -65,10 +65,20 @@ namespace LibVolume
 			this->renderer.postRender(Render::RenderMode::PostDeferred);
 		}
 
-		void Realm::setEventManager(Window::EventManager* event_manager)
+		void Realm::linkTo(Window::Window& window)
 		{
-			this->event_manager = event_manager;
-			this->renderer.setEventManager(event_manager);
+			this->event_manager = &window.event_manager;
+			this->renderer.linkTo(window);
+		}
+
+		void Realm::addObject(Object& object)
+		{
+			this->objects.push_back(&object);
+		}
+
+		void Realm::addLight(Render::Structures::Light& light)
+		{
+			this->light_list.push_back(&light);
 		}
 	}
 }

@@ -18,12 +18,20 @@ namespace LibVolume
 {
 	namespace Engine
 	{
+		enum MeshingAlgorithm
+		{
+			Cubic,
+			MarchingCubes,
+			SurfaceNets
+		};
+
 		class VoxelActor : public Data::VoxelField, public Actor
 		{
 			public:
 				float threshold = 0.5f;
 
 				VoxelActor(glm::ivec3 size);
+				void extract(MeshingAlgorithm algorithm);
 				void extractCubic();
 				void addQuad(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 d);
 				void extractMarchingCubes(bool use_density = true);

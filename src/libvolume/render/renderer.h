@@ -10,6 +10,7 @@
 #include "engine/actor.h"
 #include "engine/camera.h"
 #include "window/eventmanager.h"
+#include "window/window.h"
 #include "structures/gbuffer.h"
 #include "structures/light.h"
 
@@ -28,8 +29,28 @@ namespace LibVolume
 		class Renderer
 		{
 			public:
+				//Screen quad
+				gl::GLuint gl_quad_id;
+
+				Engine::Camera* camera;
+
+				//Light list - REFERENCE, not actual light list
+				std::vector<Structures::Light*>* light_list;
+
+				Renderer();
+				void preRender(RenderMode render_mode);
+				void postRender(RenderMode render_mode);
+				void renderTarget(RenderTarget* target);
+				void renderActor(Engine::Actor* actor);
+				void linkTo(Window::Window& window);
+				void bufferScreenQuad();
+				void assignLights();
+
+			private:
+				//An event manager point - to be assigned on window link
 				Window::EventManager* event_manager;
 
+				//The shaders needed for rendering
 				Structures::Shader* std_shader;
 				Structures::Shader* predeferred_shader;
 				Structures::Shader* postdeferred_shader;
@@ -37,23 +58,6 @@ namespace LibVolume
 
 				//Deferred shading
 				Structures::GBuffer gbuffer;
-
-				//Screen quad
-				gl::GLuint gl_quad_id;
-
-				//Light list
-				std::vector<Structures::Light*>* light_list;
-
-				Engine::Camera* camera;
-
-				Renderer();
-				void preRender(RenderMode render_mode);
-				void postRender(RenderMode render_mode);
-				void renderTarget(RenderTarget* target);
-				void renderActor(Engine::Actor* actor);
-				void setEventManager(Window::EventManager* event_manager);
-				void bufferScreenQuad();
-				void assignLights();
 		};
 	}
 }

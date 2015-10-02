@@ -13,7 +13,7 @@ namespace LibVolume
 				gl::glGenFramebuffers(1, &this->gbuffer_id);
 				gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, this->gbuffer_id);
 
-				//Create the relevant textures for it
+				//Create the relevant textures for storing data ready for deferred shading
 
 				//Position texture
 				gl::glGenTextures(1, &this->position_id);
@@ -40,6 +40,7 @@ namespace LibVolume
 				gl::glFramebufferTexture2D(gl::GL_FRAMEBUFFER, gl::GL_COLOR_ATTACHMENT2, gl::GL_TEXTURE_2D, this->colour_id, 0);
 
 				//Material texture
+				//TODO: Doesn't actually exist yet since no material data input
 				gl::glGenTextures(1, &this->material_id);
 				gl::glBindTexture(gl::GL_TEXTURE_2D, this->colour_id);
 				gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, (gl::GLuint)gl::GL_RGB, 640, 480, 0, gl::GL_RGB, gl::GL_FLOAT, NULL);

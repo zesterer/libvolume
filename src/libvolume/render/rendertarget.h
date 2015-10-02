@@ -8,17 +8,18 @@ namespace LibVolume
 		enum RenderType
 		{
 			None,
-			Actor
+			Actor,
+			VoxelTerrain
 		};
-		
+
 		//Anything that inherits this class can be rendered by the renderer class
 		class RenderTarget
 		{
 			public:
 				RenderType rendertype = RenderType::None;
-				
+
 				RenderTarget();
-				
+
 				virtual void dummy();
 		};
 	}

@@ -11,6 +11,35 @@ namespace LibVolume
 
 		}
 
+		void VoxelActor::extract(MeshingAlgorithm algorithm) //Extract a mesh from the voxel field
+		{
+			IO::output("Extracting mesh from voxel field of size " + std::to_string(this->size.x * this->size.y * this->size.z));
+
+			//Clear before meshing takes place
+			this->mesh->polygons.clear();
+
+			switch (algorithm)
+			{
+				case (MeshingAlgorithm::Cubic):
+				{
+					this->extractCubic();
+					break;
+				}
+
+				case (MeshingAlgorithm::MarchingCubes):
+				{
+					this->extractMarchingCubes(true);
+					break;
+				}
+
+				case (MeshingAlgorithm::SurfaceNets):
+				{
+					this->extractMarchingCubes(false);
+					break;
+				}
+			}
+		}
+
 		void VoxelActor::extractCubic()
 		{
 			//Loop through each voxel
@@ -65,6 +94,14 @@ namespace LibVolume
 
 			p1.correctNormals();
 			p2.correctNormals();
+
+			p1.a.colour = glm::vec3(1.0, 1.0, 1.0);
+			p1.b.colour = glm::vec3(1.0, 1.0, 1.0);
+			p1.c.colour = glm::vec3(1.0, 1.0, 1.0);
+
+			p2.a.colour = glm::vec3(1.0, 1.0, 1.0);
+			p2.b.colour = glm::vec3(1.0, 1.0, 1.0);
+			p2.c.colour = glm::vec3(1.0, 1.0, 1.0);
 
 			this->mesh->polygons.push_back(p1);
 			this->mesh->polygons.push_back(p2);
@@ -124,17 +161,6 @@ namespace LibVolume
 								polygons[poly].a.position += pos;
 								polygons[poly].b.position += pos;
 								polygons[poly].c.position += pos;
-
-								if (use_density && false)
-								{
-									/*auto v1 = noise.getPerlinVec3(glm::vec4(polygons[poly].a.pos, 17.0f), -3.0f, 1.0f, 1.0f);
-									auto v2 = noise.getPerlinVec3(glm::vec4(polygons[poly].b.pos, 17.0f), -3.0f, 1.0f, 1.0f);
-									auto v3 = noise.getPerlinVec3(glm::vec4(polygons[poly].c.pos, 17.0f), -3.0f, 1.0f, 1.0f);
-
-									polygons[poly].a.pos += glm::mix(v1, glm::vec3(0.0, 0.0, 0.0), 0.1);
-									polygons[poly].b.pos += glm::mix(v2, glm::vec3(0.0, 0.0, 0.0), 0.1);
-									polygons[poly].c.pos += glm::mix(v3, glm::vec3(0.0, 0.0, 0.0), 0.1);*/
-								}
 							}
 
 							//Append them all to the current mesh
