@@ -36,7 +36,8 @@ namespace LibVolume
 				void postTick();
 				void render();
 				void linkTo(Window::Window& window);
-				void addObject(Object& light);
+				void addObject(Object& object);
+				void removeObject(Object& object);
 				void addLight(Render::Structures::Light& light);
 		};
 	}

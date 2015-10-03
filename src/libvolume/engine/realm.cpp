@@ -76,6 +76,20 @@ namespace LibVolume
 			this->objects.push_back(&object);
 		}
 
+		void Realm::removeObject(Object& object)
+		{
+			auto it = std::find(this->objects.begin(), this->objects.end(), &object);
+
+			if (it != this->objects.end())
+			{
+				using std::swap;
+
+				std::swap(*it, this->objects.back());
+				this->objects.pop_back();
+			}
+			//Else, the object doesn't exist in the realm
+		}
+
 		void Realm::addLight(Render::Structures::Light& light)
 		{
 			this->light_list.push_back(&light);

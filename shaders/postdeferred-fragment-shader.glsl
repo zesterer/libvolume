@@ -156,8 +156,8 @@ void main()
 		{
 			float position_diff = length(texture(POSITION_BUFFER, pos + vec2(x, y) * 0.002).rgb - BUFFER_POSITION.xyz);
 
-			if (position_diff > 0.1 * CURRENT_DEPTH)
-				COLOUR += 0.25;
+			//if (position_diff > 0.1 * CURRENT_DEPTH)
+				//COLOUR += 0.25;
 		}
 	}
 

@@ -20,14 +20,15 @@ namespace LibVolume
 			public:
 				//The field dimensions
 				glm::ivec3 size;
-			
+
 				//The voxel data
 				std::vector<Voxel> voxels;
-				
+
 				//An empty voxel, used for meshing
 				Voxel empty;
-				
+
 				VoxelField(glm::ivec3 size);
+				virtual ~VoxelField();
 				//Find the voxel at the specified position within the field
 				Voxel* getAt(glm::ivec3 pos);
 		};

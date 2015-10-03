@@ -5,6 +5,7 @@
 //----LOCAL----
 #include "renderer.h"
 #include "common/io.h"
+#include "engine/voxelterrain.h"
 
 namespace LibVolume
 {
@@ -95,6 +96,17 @@ namespace LibVolume
 				{
 					//IO::output("Target is an instance of Engine::Actor");
 					this->renderActor(dynamic_cast<Engine::Actor*>(target));
+				}
+				break;
+
+				case (RenderType::VoxelTerrain):
+				{
+					//IO::output("Target is an instance of Engine::VoxelTerrain");
+					for (auto region_pair : dynamic_cast<Engine::VoxelTerrain*>(target)->children)
+					{
+						Engine::VoxelActor* region = dynamic_cast<Engine::VoxelActor*>(region_pair.second);
+						this->renderActor(region);
+					}
 				}
 				break;
 

@@ -13,8 +13,9 @@ namespace LibVolume
 				//This property should only be true if the object inherits
 				//from the 'Render::RenderTarget' class.
 				bool renderable = false;
-				
+
 				Object();
+				~Object();
 				virtual void tick();
 		};
 	}

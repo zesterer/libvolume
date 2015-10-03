@@ -11,6 +11,11 @@ namespace LibVolume
 			this->voxels.reserve(this->size.x * this->size.y * this->size.z);
 		}
 
+		VoxelField::~VoxelField()
+		{
+
+		}
+
 		Voxel* VoxelField::getAt(glm::ivec3 pos)
 		{
 			if (pos.x < 0 || pos.x >= this->size.x)

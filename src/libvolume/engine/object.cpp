@@ -7,12 +7,17 @@ namespace LibVolume
 	{
 		Object::Object()
 		{
-			
+
 		}
-		
+
 		void Object::tick()
 		{
-			
+
+		}
+
+		Object::~Object()
+		{
+
 		}
 	}
 }

@@ -32,7 +32,7 @@ namespace LibVolume
 				std::unordered_map<MapKey, VoxelField*, KeyHasher> children;
 
 				VoxelCluster(glm::ivec3 child_size);
-				VoxelField* getAt(glm::ivec3 pos);
+				virtual VoxelField* getAt(glm::ivec3 pos);
 				virtual bool loadAt(glm::ivec3 pos);
 
 				MapKey vecToKey(glm::ivec3 vec);

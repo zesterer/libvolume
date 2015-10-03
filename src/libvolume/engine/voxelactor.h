@@ -1,3 +1,6 @@
+#ifndef LIBVOLUME_ENGINE_VOXELACTOR_H
+#define LIBVOLUME_ENGINE_VOXELACTOR_H
+
 //----LOCAL----
 #include "data/voxelfield.h"
 #include "actor.h"
@@ -39,3 +42,5 @@ namespace LibVolume
 		};
 	}
 }
+
+#endif
