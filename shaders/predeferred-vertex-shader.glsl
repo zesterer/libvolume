@@ -1,9 +1,9 @@
 #version 330 core
 
 //----UNIFORMS----
-uniform            mat4 PERSPECTIVE_MATRIX;
-uniform            mat4 CAMERA_MATRIX;
-uniform            mat4 MODEL_MATRIX;
+uniform    highp   mat4 PERSPECTIVE_MATRIX;
+uniform    highp   mat4 CAMERA_MATRIX;
+uniform    highp   mat4 MODEL_MATRIX;
 
 //----INPUTS----
 in         highp   vec3 VERTEX_POS;

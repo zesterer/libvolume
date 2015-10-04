@@ -6,6 +6,7 @@
 #include "data/voxelcluster.h"
 #include "engine/entity.h"
 #include "render/rendertarget.h"
+#include "voxelterrainchild.h"
 
 namespace LibVolume
 {
@@ -16,7 +17,7 @@ namespace LibVolume
 			public:
 				VoxelTerrain(glm::ivec3 child_size);
 				bool loadAt(glm::ivec3 pos) override;
-				VoxelActor* getAt(glm::ivec3 pos) override;
+				VoxelTerrainChild* getAt(glm::ivec3 pos) override;
 				void tick() override;
 		};
 	}

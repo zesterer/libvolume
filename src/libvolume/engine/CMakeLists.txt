@@ -29,5 +29,6 @@ ${CMAKE_CURRENT_SOURCE_DIR}/object.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/camera.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/voxelactor.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/voxelterrain.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/voxelterrainchild.cpp
 PARENT_SCOPE
 )

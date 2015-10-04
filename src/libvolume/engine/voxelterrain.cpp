@@ -18,30 +18,33 @@ namespace LibVolume
 				return false;
 
 			//Add the new region
-			Data::VoxelField* tmp = dynamic_cast<Data::VoxelField*>(new VoxelActor(this->child_size));
+			Data::VoxelField* tmp = dynamic_cast<Data::VoxelField*>(new VoxelTerrainChild(this->child_size));
 			this->children.insert({this->vecToKey(pos), tmp});
 
 			//Set it's state
-			dynamic_cast<VoxelActor*>(tmp)->mesh_state.position = glm::vec3((float)(pos.x * this->child_size.x), (float)(pos.y * this->child_size.y), (float)(pos.z * this->child_size.z));
+			dynamic_cast<VoxelTerrainChild*>(tmp)->mesh_state.position = glm::vec3((float)(pos.x * this->child_size.x), (float)(pos.y * this->child_size.y), (float)(pos.z * this->child_size.z));
+
+			//Set it's position
+			dynamic_cast<VoxelTerrainChild*>(tmp)->pos = pos * this->child_size;
 
 			IO::output("Loaded region!");
 
 			return true;
 		}
 
-		VoxelActor* VoxelTerrain::getAt(glm::ivec3 pos)
+		VoxelTerrainChild* VoxelTerrain::getAt(glm::ivec3 pos)
 		{
 			if (this->children.count(this->vecToKey(pos)) == 0)
 				this->loadAt(pos);
 
-			return dynamic_cast<VoxelActor*>(this->children.at(this->vecToKey(pos)));
+			return dynamic_cast<VoxelTerrainChild*>(this->children.at(this->vecToKey(pos)));
 		}
 
 		void VoxelTerrain::tick()
 		{
 			for (auto region_pair : this->children)
 			{
-				Engine::VoxelActor* region = dynamic_cast<VoxelActor*>(region_pair.second);
+				Engine::VoxelActor* region = dynamic_cast<VoxelTerrainChild*>(region_pair.second);
 				region->state = this->state;
 				region->tick();
 			}

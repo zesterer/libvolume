@@ -30,7 +30,7 @@ namespace LibVolume
 				VoxelField(glm::ivec3 size);
 				virtual ~VoxelField();
 				//Find the voxel at the specified position within the field
-				Voxel* getAt(glm::ivec3 pos);
+				virtual Voxel* getAt(glm::ivec3 pos);
 		};
 	}
 }

@@ -3,9 +3,9 @@
 //----UNIFORMS----
 uniform   highp   uint      TICK;
 
-uniform   lowp    mat4      PERSPECTIVE_MATRIX;
-uniform   lowp    mat4      CAMERA_MATRIX;
-uniform   lowp    mat4      MODEL_MATRIX;
+uniform   highp   mat4      PERSPECTIVE_MATRIX;
+uniform   highp   mat4      CAMERA_MATRIX;
+uniform   highp   mat4      MODEL_MATRIX;
 
 uniform   lowp    vec3      MESH_COLOUR;
 
