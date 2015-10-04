@@ -31,6 +31,8 @@ namespace LibVolume
 				virtual ~VoxelField();
 				//Find the voxel at the specified position within the field
 				virtual Voxel* getAt(glm::ivec3 pos);
+				virtual float getDensityAt(glm::vec3 pos);
+				virtual glm::vec3 getNormalAt(glm::vec3 pos);
 		};
 	}
 }

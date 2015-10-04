@@ -33,6 +33,9 @@ namespace LibVolume
 			public:
 				float threshold = 0.5f;
 
+				//Whether the meshing algorithm meshes the first plane
+				bool mesh_first_plane = true;
+
 				VoxelActor(glm::ivec3 size);
 				void extract(MeshingAlgorithm algorithm);
 				void extractCubic();

@@ -109,13 +109,20 @@ namespace LibVolume
 
 		void VoxelActor::extractMarchingCubes(bool use_density)
 		{
+			glm::ivec3 count;
+			glm::ivec3 initial;
+
             //Loop through each voxel
-			glm::ivec3 count = {0, 0, 0};
-			for (count.x = -1; count.x < this->size.x; count.x ++)
+            if (this->mesh_first_plane)
+				initial = {-1, -1, -1};
+			else
+				initial = {0, 0, 0};
+
+			for (count.x = initial.x; count.x < this->size.x; count.x ++)
 			{
-				for (count.y = -1; count.y < this->size.y; count.y ++)
+				for (count.y = initial.y; count.y < this->size.y; count.y ++)
 				{
-					for (count.z = -1; count.z < this->size.z; count.z ++)
+					for (count.z = initial.z; count.z < this->size.z; count.z ++)
 					{
 						glm::vec3 pos = glm::vec3((float)count.x, (float)count.y, (float)count.z);
 
@@ -152,6 +159,10 @@ namespace LibVolume
 								polygons[poly].a.position += pos;
 								polygons[poly].b.position += pos;
 								polygons[poly].c.position += pos;
+
+								polygons[poly].a.normal = this->getNormalAt(polygons[poly].a.position);
+								polygons[poly].b.normal = this->getNormalAt(polygons[poly].b.position);
+								polygons[poly].c.normal = this->getNormalAt(polygons[poly].c.position);
 							}
 
 							//Append them all to the current mesh
@@ -212,7 +223,7 @@ namespace LibVolume
 					poly.b.colour = glm::vec3(1.0, 1.0, 1.0);
 					poly.c.colour = glm::vec3(1.0, 1.0, 1.0);
 
-					poly.correctNormals();
+					//poly.correctNormals();
 
 					polygons.push_back(poly);
 				}

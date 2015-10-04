@@ -19,6 +19,8 @@ namespace LibVolume
 
 				VoxelTerrainChild(glm::ivec3 size);
 				Data::Voxel* getAt(glm::ivec3 pos) override;
+				float getDensityAt(glm::vec3 pos) override;
+				glm::vec3 getNormalAt(glm::vec3 pos) override;
 		};
 	}
 }
