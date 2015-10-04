@@ -20,7 +20,14 @@ namespace LibVolume
 
 					gl::GLuint render_depth_id;
 
-					void init();
+					int width = 640;
+					int height = 480;
+
+					//Has the gbuffer been created?
+					bool initiated = false;
+
+					void init(int width, int height);
+					void tick(int width, int height);
 			};
 		}
 	}

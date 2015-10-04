@@ -40,6 +40,9 @@ namespace LibVolume
 			public:
 				unsigned long long time;
 
+				int window_width = 640;
+				int window_height = 480;
+
 				WindowSizeState window_size_state;
 				KeyboardState keyboard_state;
 

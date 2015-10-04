@@ -29,7 +29,7 @@ namespace LibVolume
 			this->postdeferred_shader->loadFromFiles("../libvolume/shaders/postdeferred-vertex-shader.glsl", "../libvolume/shaders/postdeferred-fragment-shader.glsl");
 
 			this->bufferScreenQuad();
-			this->gbuffer.init();
+			//this->gbuffer.init(640, 480);
 		}
 
 		void Renderer::preRender(RenderMode render_mode)
@@ -293,6 +293,11 @@ namespace LibVolume
 			gl::glGenBuffers(1, &this->gl_quad_id);
 			gl::glBindBuffer(gl::GL_ARRAY_BUFFER, this->gl_quad_id);
 			gl::glBufferData(gl::GL_ARRAY_BUFFER, sizeof(gl_quad_data), gl_quad_data, gl::GL_STATIC_DRAW);
+		}
+
+		void Renderer::tick()
+		{
+			this->gbuffer.tick(this->event_manager->getWindowSizeState()->width, this->event_manager->getWindowSizeState()->height);
 		}
 	}
 }

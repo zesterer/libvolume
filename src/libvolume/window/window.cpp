@@ -41,6 +41,10 @@ namespace LibVolume
 		void Window::activate(bool enable)
 		{
 			this->sfml_window->setActive(enable);
+
+			//Update the window size
+			this->event_manager.window_size_state.width = this->sfml_window->getSize().x;
+			this->event_manager.window_size_state.height = this->sfml_window->getSize().y;
 		}
 
 		bool Window::tick()

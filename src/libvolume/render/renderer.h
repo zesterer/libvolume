@@ -45,6 +45,7 @@ namespace LibVolume
 				void linkTo(Window::Window& window);
 				void bufferScreenQuad();
 				void assignLights();
+				void tick();
 
 			private:
 				//An event manager point - to be assigned on window link

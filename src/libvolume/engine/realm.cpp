@@ -42,6 +42,9 @@ namespace LibVolume
 
 		void Realm::postTick()
 		{
+			//Tick the renderer
+			this->renderer.tick();
+
 			//Time in seconds
 			this->time += 1;
 		}
