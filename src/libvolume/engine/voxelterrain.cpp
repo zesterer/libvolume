@@ -21,11 +21,14 @@ namespace LibVolume
 			Data::VoxelField* tmp = dynamic_cast<Data::VoxelField*>(new VoxelTerrainChild(this->child_size));
 			this->children.insert({this->vecToKey(pos), tmp});
 
+			//Set it's parent
+			dynamic_cast<VoxelTerrainChild*>(tmp)->parent = this;
+
 			//Set it's state
 			dynamic_cast<VoxelTerrainChild*>(tmp)->mesh_state.position = glm::vec3((float)(pos.x * this->child_size.x), (float)(pos.y * this->child_size.y), (float)(pos.z * this->child_size.z));
 
 			//Set it's position
-			dynamic_cast<VoxelTerrainChild*>(tmp)->pos = pos * this->child_size;
+			dynamic_cast<VoxelTerrainChild*>(tmp)->location = pos * this->child_size;
 
 			IO::output("Loaded region!");
 
@@ -34,10 +37,26 @@ namespace LibVolume
 
 		VoxelTerrainChild* VoxelTerrain::getAt(glm::ivec3 pos)
 		{
-			if (this->children.count(this->vecToKey(pos)) == 0)
+			if (!this->existsAt(pos / this->child_size))
 				this->loadAt(pos);
 
 			return dynamic_cast<VoxelTerrainChild*>(this->children.at(this->vecToKey(pos)));
+		}
+
+		Data::Voxel* VoxelTerrain::getVoxelAt(glm::ivec3 pos)
+		{
+			//IO::output(std::to_string(pos.x) + "," + std::to_string(pos.y) + "," + std::to_string(pos.z));
+			//IO::output(std::to_string(pos.x / this->child_size.x) + "," + std::to_string(pos.y / this->child_size.y) + "," + std::to_string(pos.z / this->child_size.z));
+
+			glm::ivec3 p = pos;
+			p += 10 * this->child_size;
+			p /= this->child_size;
+			p -= 10;
+
+			if (this->existsAt(p))
+				return this->getAt(p)->getAt((pos + 10 * this->child_size) % this->child_size);
+			else
+				return &this->empty;
 		}
 
 		void VoxelTerrain::tick()

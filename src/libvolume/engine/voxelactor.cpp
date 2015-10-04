@@ -140,15 +140,6 @@ namespace LibVolume
 						density_cube[0b110] = this->getAt(count + glm::ivec3(1, 1, 0))->density;
 						density_cube[0b111] = this->getAt(count + glm::ivec3(1, 1, 1))->density;
 
-						/*density_cube[0][0][0] = this->getAt(count + glm::ivec3(0, 0, 0))->density;
-						density_cube[1][0][0] = this->getAt(count + glm::ivec3(0, 0, 1))->density;
-						density_cube[1][1][0] = this->getAt(count + glm::ivec3(0, 1, 0))->density;
-						density_cube[0][1][0] = this->getAt(count + glm::ivec3(0, 1, 1))->density;
-						density_cube[0][0][1] = this->getAt(count + glm::ivec3(1, 0, 0))->density;
-						density_cube[1][0][1] = this->getAt(count + glm::ivec3(1, 0, 1))->density;
-						density_cube[1][1][1] = this->getAt(count + glm::ivec3(1, 1, 0))->density;
-						density_cube[0][1][1] = this->getAt(count + glm::ivec3(1, 1, 1))->density;*/
-
 						if (index != 0 && index != 255) //Make sure it's not fully empty or fully filled
 						{
 							//Get the configuration

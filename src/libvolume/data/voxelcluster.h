@@ -34,6 +34,7 @@ namespace LibVolume
 				VoxelCluster(glm::ivec3 child_size);
 				virtual VoxelField* getAt(glm::ivec3 pos);
 				virtual bool loadAt(glm::ivec3 pos);
+				bool existsAt(glm::ivec3 pos);
 
 				MapKey vecToKey(glm::ivec3 vec);
 		};

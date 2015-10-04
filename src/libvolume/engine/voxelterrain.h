@@ -15,9 +15,13 @@ namespace LibVolume
 		class VoxelTerrain : public Data::VoxelCluster, public Engine::Entity, public Render::RenderTarget
 		{
 			public:
+				//An empty voxel, used for meshing
+				Data::Voxel empty;
+
 				VoxelTerrain(glm::ivec3 child_size);
 				bool loadAt(glm::ivec3 pos) override;
 				VoxelTerrainChild* getAt(glm::ivec3 pos) override;
+				Data::Voxel* getVoxelAt(glm::ivec3 pos);
 				void tick() override;
 		};
 	}

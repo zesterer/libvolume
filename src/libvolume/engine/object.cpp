@@ -1,5 +1,6 @@
 //----LOCAL----
 #include "object.h"
+#include "realm.h"
 
 namespace LibVolume
 {
@@ -17,7 +18,8 @@ namespace LibVolume
 
 		Object::~Object()
 		{
-
+			if (this->parent != nullptr)
+				this->parent->removeObject(*this);
 		}
 	}
 }

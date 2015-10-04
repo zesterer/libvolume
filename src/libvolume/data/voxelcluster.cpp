@@ -32,15 +32,22 @@ namespace LibVolume
 
 		VoxelField* VoxelCluster::getAt(glm::ivec3 pos)
 		{
-			if (this->children.count(this->vecToKey(pos)) == 0)
+			if (!this->existsAt(pos))
 				this->loadAt(pos);
 
 			return this->children.at(this->vecToKey(pos));
 		}
 
+		bool VoxelCluster::existsAt(glm::ivec3 pos)
+		{
+			if (this->children.find(this->vecToKey(pos)) == this->children.end())
+				return false;
+			return true;
+		}
+
 		bool VoxelCluster::loadAt(glm::ivec3 pos)
 		{
-			if (this->children.count(this->vecToKey(pos)) > 0)
+			if (this->existsAt(pos))
 				return false;
 
 			VoxelField* tmp = new VoxelField(this->child_size);
