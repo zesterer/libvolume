@@ -14,6 +14,7 @@ uniform lowp sampler2D COLOUR_BUFFER;
 const int LIGHT_NUMBER = 32;
 uniform lowp vec4 LIGHT_VECTOR[LIGHT_NUMBER];
 uniform lowp vec4 LIGHT_COLOUR[LIGHT_NUMBER];
+uniform lowp vec4 LIGHT_DIRECT[LIGHT_NUMBER];
 
 highp vec4  BUFFER_POSITION;
 lowp vec4  BUFFER_NORMAL;
@@ -151,7 +152,7 @@ void main()
 	}
 
 	//Loop through all the lights
-	for (int count = 0; count < 16; count ++)
+	for (int count = 0; count < LIGHT_NUMBER; count ++)
 	{
 		//Find the direction and colour of each light
 		vec4 colour = LIGHT_COLOUR[count];
@@ -164,7 +165,12 @@ void main()
 
 			if (vector.w == 1.0) //Decrease brightness with distance
 			{
-				multiplier = min(length(colour.rgb), max(0.0, colour.w / pow(length(vector.xyz), 1.5)));
+				multiplier = min(length(colour.rgb), max(0.0, 5.0 * colour.w / pow(length(vector.xyz), 1.5)));
+
+				//if (dot(normalize(vector.xyz), vec3(0.0, 0.0, 1.0)) < 0.9)
+					//multiplier = 0.0;
+
+				multiplier *= min(1.0, pow(10.0 * max(0.0, dot(normalize(vector.xyz), normalize(LIGHT_DIRECT[count].xyz)) - LIGHT_DIRECT[count].w), 4.0));
 			}
 
 			//Add the light to the existing lighting conditions

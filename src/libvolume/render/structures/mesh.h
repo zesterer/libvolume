@@ -32,6 +32,7 @@ namespace LibVolume
 					Mesh();
 					bool loadFromOBJ(std::string filename, bool recalc_normals = false);
 					void buffer();
+					void clear();
 			};
 		}
 	}

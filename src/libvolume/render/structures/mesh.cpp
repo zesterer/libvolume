@@ -211,6 +211,15 @@ namespace LibVolume
 				return true;
 			}
 
+			void Mesh::clear()
+			{
+				if (this->buffered)
+					gl::glDeleteVertexArrays(1, &this->gl_id);
+
+				this->polygons.clear();
+				this->buffered = false;
+			}
+
 			void Mesh::buffer()
 			{
 				//Clear any existing memory before rebuffering

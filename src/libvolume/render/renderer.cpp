@@ -247,8 +247,9 @@ namespace LibVolume
 		void Renderer::assignLights()
 		{
 			//Find the uniform lighting vector, then assign it
-			glm::vec4 light_vector_array[16];
-			glm::vec4 light_colour_array[16];
+			glm::vec4 light_vector_array[32];
+			glm::vec4 light_colour_array[32];
+			glm::vec4 light_direct_array[32];
 
 			for (unsigned int light = 0; light < this->light_list->size(); light ++)
 			{
@@ -260,11 +261,14 @@ namespace LibVolume
 					light_vector_array[light] = glm::vec4(clight->position, 1.0);
 
 				light_colour_array[light] = glm::vec4(clight->colour, clight->ambiance);
+
+				light_direct_array[light] = glm::vec4(clight->direct, clight->spot_angle);
 			}
 
 			//Assign the lighting array. Maximum of 16 lights at the moment
-			gl::glUniform4fv(gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "LIGHT_VECTOR"), 16 * 4, &light_vector_array[0].x);
-			gl::glUniform4fv(gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "LIGHT_COLOUR"), 16 * 4, &light_colour_array[0].x);
+			gl::glUniform4fv(gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "LIGHT_VECTOR"), 32 * 4, &light_vector_array[0].x);
+			gl::glUniform4fv(gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "LIGHT_COLOUR"), 32 * 4, &light_colour_array[0].x);
+			gl::glUniform4fv(gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "LIGHT_DIRECT"), 32 * 4, &light_direct_array[0].x);
 		}
 
 		void Renderer::linkTo(Window::Window& window)

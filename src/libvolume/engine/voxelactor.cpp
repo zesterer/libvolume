@@ -16,7 +16,7 @@ namespace LibVolume
 			IO::output("Extracting mesh from voxel field of size " + std::to_string(this->size.x * this->size.y * this->size.z));
 
 			//Clear before meshing takes place
-			this->mesh->polygons.clear();
+			this->mesh->clear();
 
 			switch (algorithm)
 			{
