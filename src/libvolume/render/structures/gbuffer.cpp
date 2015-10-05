@@ -12,6 +12,12 @@ namespace LibVolume
 				this->width = width;
 				this->height = height;
 
+				//Delete just incase we're re-initiating
+				if (this->initiated)
+				{
+					gl::glDeleteFramebuffers(1, &this->gbuffer_id);
+				}
+
 				//Create the GBuffer
 				gl::glGenFramebuffers(1, &this->gbuffer_id);
 				gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, this->gbuffer_id);
@@ -37,7 +43,7 @@ namespace LibVolume
 				//Colour texture
 				gl::glGenTextures(1, &this->colour_id);
 				gl::glBindTexture(gl::GL_TEXTURE_2D, this->colour_id);
-				gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, (gl::GLuint)gl::GL_RGBA, this->width, this->height, 0, gl::GL_RGBA, gl::GL_FLOAT, NULL);
+				gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, (gl::GLuint)gl::GL_RGBA16F, this->width, this->height, 0, gl::GL_RGBA, gl::GL_FLOAT, NULL);
 				gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MIN_FILTER, (gl::GLuint)gl::GL_NEAREST);
 				gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MAG_FILTER, (gl::GLuint)gl::GL_NEAREST);
 				gl::glFramebufferTexture2D(gl::GL_FRAMEBUFFER, gl::GL_COLOR_ATTACHMENT2, gl::GL_TEXTURE_2D, this->colour_id, 0);

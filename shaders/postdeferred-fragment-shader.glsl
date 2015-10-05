@@ -8,8 +8,8 @@ uniform mat4 PERSPECTIVE_MATRIX;
 uniform mat4 CAMERA_MATRIX;
 
 uniform highp sampler2D POSITION_BUFFER;
-uniform highp sampler2D NORMAL_BUFFER;
-uniform highp sampler2D COLOUR_BUFFER;
+uniform mediump sampler2D NORMAL_BUFFER;
+uniform lowp sampler2D COLOUR_BUFFER;
 
 const int LIGHT_NUMBER = 32;
 uniform lowp vec4 LIGHT_VECTOR[LIGHT_NUMBER];
@@ -26,21 +26,26 @@ float getSpecular(vec4 vector)
 	lowp float specular_amount = 0.3;//MATERIAL_DATA[1];
 	lowp float specular_cap = 2.0;//MATERIAL_DATA[2];
 
-	vec4 cam_normal = CAMERA_MATRIX * BUFFER_NORMAL;
+	if (false && (specular_amount < 0.01 || specular_shininess < 0.01 || specular_cap < 0.01))
+		return 0.0;
+	else
+	{
+		vec4 cam_normal = CAMERA_MATRIX * BUFFER_NORMAL;
 
-	lowp vec3 N = normalize((cam_normal).xyz);
-	lowp vec3 L = normalize((CAMERA_MATRIX * vector).xyz);
-	lowp vec3 R = normalize(2.0 * N * dot(N, L) - L);
-	lowp vec3 V = normalize((CAMERA_MATRIX * BUFFER_POSITION).xyz / 2.0);
+		lowp vec3 N = cam_normal.xyz;
+		lowp vec3 L = (CAMERA_MATRIX * vector).xyz;
+		lowp vec3 R = 2.0 * N * dot(N, L) - L;
+		lowp vec3 V = normalize((CAMERA_MATRIX * BUFFER_POSITION).xyz / 2.0);
 
-	lowp float specular = (dot(R, V) - (1.0 - specular_amount)) * 1.0 / specular_amount;
-	specular = min(specular_cap, pow(max(0.0, specular), max(0.00001, specular_shininess)) * specular_shininess * 0.2);
-	return specular;
+		lowp float specular = (dot(R, V) - (1.0 - specular_amount)) * 1.0 / specular_amount;
+		specular = min(specular_cap, pow(max(0.0, specular), max(0.00001, specular_shininess)) * specular_shininess * 0.2);
+		return specular;
+	}
 }
 
 float getDiffuse(vec4 vector, float ambiance)
 {
-	return min(1.0, max(ambiance, dot(normalize(BUFFER_NORMAL).xyz, -normalize(vector.xyz))));
+	return min(1.0, max(ambiance, dot(BUFFER_NORMAL.xyz, -vector.xyz)));
 }
 
 vec4 getVector(vec4 vector)
@@ -103,7 +108,7 @@ float getDepth(vec2 pos)
 
 vec3 getNormal(vec2 pos)
 {
-	return normalize(texture(NORMAL_BUFFER, pos).xyz);
+	return texture(NORMAL_BUFFER, pos).xyz;
 }
 
 void main()
@@ -119,17 +124,36 @@ void main()
 	BUFFER_NORMAL = vec4(normalize(texture(NORMAL_BUFFER, pos).rgb), 0.0);
 	BUFFER_COLOUR = texture(COLOUR_BUFFER, pos).rgb;
 
+	if (BUFFER_COLOUR.r > 100.0)
+		BUFFER_COLOUR.r = 0.0;
+
 	CURRENT_DEPTH = getDepth(pos);
+
+	//Surface roughness
+	if (false)
+	{
+		vec4 norm = vec4(0.0, 0.0, 0.0, 0.0);
+		vec3 pos  = BUFFER_POSITION.xyz;
+
+		float lod = 6.0;
+
+		norm.x    = getPerlin(vec4(pos / 500.0, 4.0), 0.5, lod, 1.0);
+		norm.y    = getPerlin(vec4(pos / 500.0, 5.0), 0.5, lod, 1.0);
+		norm.z    = getPerlin(vec4(pos / 500.0, 6.0), 0.5, lod, 1.0);
+		norm      = normalize(norm);
+		BUFFER_NORMAL  = normalize(BUFFER_NORMAL + norm * 0.55);
+	}
 
 	//Loop through all the lights
 	for (int count = 0; count < 16; count ++)
 	{
 		//Find the direction and colour of each light
-		vec4 vector = getVector(LIGHT_VECTOR[count]);
 		vec4 colour = LIGHT_COLOUR[count];
 
 		if (colour.xyz != vec3(0.0, 0.0, 0.0)) //If the light is actually a light
 		{
+			vec4 vector = getVector(LIGHT_VECTOR[count]);
+
 			float multiplier = 1.0;
 
 			if (vector.w == 1.0) //Decrease brightness with distance
@@ -143,14 +167,24 @@ void main()
 		}
 	}
 
-	float p = 1.0;//0.8 + getPerlin(BUFFER_POSITION / 500.0, 1.0, 4.0, 1.0) / 5.0;
+	float p = 0.8 + getPerlin(BUFFER_POSITION / 500.0, 1.0, 4.0, 1.0) / 2.5;
 
 	if (BUFFER_POSITION.xyz == vec3(0.0, 0.0, 0.0))
+	{
 		COLOUR = vec3(0.0, 0.0, 0.0);
 
-	COLOUR = BUFFER_COLOUR * p * diffuse + specular;
+		float a = getPerlin(inverse(CAMERA_MATRIX) * normalize(vec4(-UV.x, -UV.y, 1.0, 0.0)) * 64.0, -2.0, 2.0, 2.0);
 
-	for (float x = -1.0; x < 1.0; x += 1.0)
+		//STARHACK
+		if (a > 0.85)
+		{
+			COLOUR = vec3(1.0, 1.0, 1.0);
+		}
+	}
+	else
+		COLOUR = BUFFER_COLOUR * p * diffuse + specular;
+
+	/*for (float x = -1.0; x < 1.0; x += 1.0)
 	{
 		for (float y = -1.0; y < 1.0; y += 1.0)
 		{
@@ -159,7 +193,7 @@ void main()
 			if (position_diff > 0.1 * CURRENT_DEPTH)
 				COLOUR += 0.25;
 		}
-	}
+	}*/
 
 	//Hacked together SSAO
 	/*float totaldepth = 0.0;

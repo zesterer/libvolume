@@ -51,7 +51,7 @@ void main()
 	NORMAL_BUFFER = F_W_NORMAL.xyz;
 
 	if (F_W_COLOUR != vec3(1.0, 1.0, 1.0))
-		COLOUR_BUFFER.rgb = F_W_COLOUR.rgb;
+		COLOUR_BUFFER.rgb = F_W_COLOUR.rgb * MESH_COLOUR;
 	else
 		COLOUR_BUFFER.rgb = MESH_COLOUR;
 }
