@@ -20,7 +20,7 @@ namespace LibVolume
 				glm::mat4 matrix;
 				glm::mat4 perspective_matrix;
 
-				float fov = 0.95;
+				float fov = 1.271;
 				float min_render = 1.0;
 				float max_render = 1000000.0;
 				float screen_ratio = 1.0;

@@ -20,7 +20,7 @@ lowp vec4  BUFFER_NORMAL;
 lowp vec3  BUFFER_COLOUR;
 highp float CURRENT_DEPTH;
 
-float getSpecular(vec4 vector)
+float getSpecular(vec3 vector)
 {
 	lowp float specular_shininess = 2.0;//MATERIAL_DATA[0];
 	lowp float specular_amount = 0.3;//MATERIAL_DATA[1];
@@ -33,11 +33,11 @@ float getSpecular(vec4 vector)
 		vec4 cam_normal = CAMERA_MATRIX * BUFFER_NORMAL;
 
 		lowp vec3 N = cam_normal.xyz;
-		lowp vec3 L = (CAMERA_MATRIX * vector).xyz;
+		lowp vec3 L = (CAMERA_MATRIX * vec4(vector, 0.0)).xyz;
 		lowp vec3 R = 2.0 * N * dot(N, L) - L;
 		lowp vec3 V = normalize((CAMERA_MATRIX * BUFFER_POSITION).xyz / 2.0);
 
-		lowp float specular = (dot(R, V) - (1.0 - specular_amount)) * 1.0 / specular_amount;
+		lowp float specular = max(0.0, (dot(R, V) - (1.0 - specular_amount)) * 1.0 / specular_amount);
 		specular = min(specular_cap, pow(max(0.0, specular), max(0.00001, specular_shininess)) * specular_shininess * 0.2);
 		return specular;
 	}
@@ -45,15 +45,18 @@ float getSpecular(vec4 vector)
 
 float getDiffuse(vec4 vector, float ambiance)
 {
+	if (vector.w == 1.0)
+		ambiance = 0.0;
+
 	return min(1.0, max(ambiance, dot(BUFFER_NORMAL.xyz, -vector.xyz)));
 }
 
 vec4 getVector(vec4 vector)
 {
 	if (vector.w == 1.0) //It's a point light
-		return normalize(vec4((BUFFER_POSITION).xyz - vector.xyz, 0.0));
+		return vec4(BUFFER_POSITION.xyz - vector.xyz, 1.0);
 	else //It's a directional light
-		return normalize(vector);
+		return vec4(normalize(vector.xyz), 0.0);
 }
 
 float getRandom(vec4 pos)
@@ -124,6 +127,9 @@ void main()
 	BUFFER_NORMAL = vec4(normalize(texture(NORMAL_BUFFER, pos).rgb), 0.0);
 	BUFFER_COLOUR = texture(COLOUR_BUFFER, pos).rgb;
 
+	//Decode back into HDR
+	BUFFER_COLOUR = BUFFER_COLOUR / (1.0 - BUFFER_COLOUR);
+
 	if (BUFFER_COLOUR.r > 100.0)
 		BUFFER_COLOUR.r = 0.0;
 
@@ -158,12 +164,12 @@ void main()
 
 			if (vector.w == 1.0) //Decrease brightness with distance
 			{
-				multiplier = min(1.0, 5.0 / pow(distance((BUFFER_POSITION).xyz, LIGHT_VECTOR[count].xyz), 1.5));
+				multiplier = min(length(colour.rgb), max(0.0, colour.w / pow(length(vector.xyz), 1.5)));
 			}
 
 			//Add the light to the existing lighting conditions
-			specular += colour.xyz * getSpecular(vector) * multiplier; //Find the specular component
-			diffuse  += colour.xyz * getDiffuse(vector, colour.w) * multiplier; //Find the diffuse component
+			specular += colour.xyz * getSpecular(normalize(vector.xyz)) * multiplier; //Find the specular component
+			diffuse  += colour.xyz * getDiffuse(vec4(normalize(vector.xyz), vector.w), colour.w) * multiplier; //Find the diffuse component
 		}
 	}
 
@@ -173,7 +179,7 @@ void main()
 	{
 		COLOUR = vec3(0.0, 0.0, 0.0);
 
-		float a = getPerlin(inverse(CAMERA_MATRIX) * normalize(vec4(-UV.x, -UV.y, 1.0, 0.0)) * 64.0, -2.0, 2.0, 2.0);
+		float a = getPerlin(inverse(CAMERA_MATRIX * PERSPECTIVE_MATRIX) * normalize(vec4(-UV.x, -UV.y, 1.0, 0.0)) * 1.0, 5.0, 2.0, 2.0);
 
 		//STARHACK
 		if (a > 0.85)
@@ -212,6 +218,9 @@ void main()
 	COLOUR *= totaldepth;*/
 
 	//COLOUR = floor(COLOUR * 16.0) / 16.0;
+
+	//Push HDR back into displayable ranges
+	COLOUR = COLOUR / (COLOUR + 1.0);
 
 	//Faded corners
 	COLOUR *= mix(vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), min(1, 1.5 - length(UV)));

@@ -50,8 +50,11 @@ void main()
 	POSITION_BUFFER = F_W_POSITION;
 	NORMAL_BUFFER = F_W_NORMAL.xyz;
 
-	if (F_W_COLOUR != vec3(1.0, 1.0, 1.0))
-		COLOUR_BUFFER.rgb = F_W_COLOUR.rgb * MESH_COLOUR;
-	else
-		COLOUR_BUFFER.rgb = MESH_COLOUR;
+	COLOUR_BUFFER.rgb = F_W_COLOUR.rgb * MESH_COLOUR;
+
+	//if (COLOUR_BUFFER.r > 20.0)
+		//COLOUR_BUFFER.rgb = vec3(0.0, 100.0, 0.0);
+
+	//Encode HDR into displayable ranges
+	COLOUR_BUFFER = COLOUR_BUFFER / (COLOUR_BUFFER + 1.0);
 }
