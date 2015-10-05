@@ -31,8 +31,15 @@ namespace LibVolume
 			{
 				Object* object = this->objects[count];
 
-				//Tick the object
+				//Tick the object both as 'whatever it is', and as a base object.
 				object->tick();
+
+				//Delete the object if it needs deleting
+				if (object->timeout == 0)
+				{
+					this->removeObject(*object);
+					delete object;
+				}
 
 				//IO::output("Ticked an object");
 			}

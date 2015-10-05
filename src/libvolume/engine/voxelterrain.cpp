@@ -59,7 +59,7 @@ namespace LibVolume
 				return &this->empty;
 		}
 
-		void VoxelTerrain::tick()
+		void VoxelTerrain::tick() const
 		{
 			for (auto region_pair : this->children)
 			{

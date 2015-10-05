@@ -9,12 +9,12 @@ namespace LibVolume
 		{
 			this->time ++;
 		}
-		
+
 		WindowSizeState* EventManager::getWindowSizeState()
 		{
 			return &this->window_size_state;
 		}
-		
+
 		KeyboardState* EventManager::getKeyboardState()
 		{
 				return &this->keyboard_state;

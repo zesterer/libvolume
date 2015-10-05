@@ -55,7 +55,6 @@ namespace LibVolume
 				Structures::Shader* std_shader;
 				Structures::Shader* predeferred_shader;
 				Structures::Shader* postdeferred_shader;
-				Structures::Shader* post_shader;
 
 				//Deferred shading
 				Structures::GBuffer gbuffer;

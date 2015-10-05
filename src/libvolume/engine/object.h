@@ -17,11 +17,13 @@ namespace LibVolume
 				//from the 'Render::RenderTarget' class.
 				bool renderable = false;
 
+				long timeout = -1;
+
 				Realm* parent = nullptr;
 
 				Object();
-				~Object();
-				virtual void tick();
+				virtual ~Object();
+				virtual void tick() const;
 		};
 	}
 }

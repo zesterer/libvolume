@@ -1,6 +1,7 @@
 //----LOCAL----
 #include "object.h"
 #include "realm.h"
+#include "io.h"
 
 namespace LibVolume
 {
@@ -11,9 +12,10 @@ namespace LibVolume
 
 		}
 
-		void Object::tick()
+		void Object::tick() const
 		{
-
+			if (((Object*)this)->timeout > 0)
+				((Object*)this)->timeout --;
 		}
 
 		Object::~Object()

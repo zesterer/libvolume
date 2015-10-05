@@ -83,6 +83,8 @@ namespace LibVolume
 			this->event_manager.keyboard_state.key_q = sf::Keyboard::isKeyPressed(sf::Keyboard::Q);
 			this->event_manager.keyboard_state.key_e = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
 
+			this->event_manager.keyboard_state.key_f = sf::Keyboard::isKeyPressed(sf::Keyboard::F);
+
 			this->event_manager.keyboard_state.key_up = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
 			this->event_manager.keyboard_state.key_left = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
 			this->event_manager.keyboard_state.key_down = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);

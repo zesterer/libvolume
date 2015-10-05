@@ -11,9 +11,9 @@ namespace LibVolume
 			this->rendertype = Render::RenderType::Actor;
 		}
 
-		void Actor::tick()
+		void Actor::tick() const
 		{
-			this->mesh_state.tick();
+			((Actor*)this)->mesh_state.tick();
 			Entity::tick();
 		}
 	}

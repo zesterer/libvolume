@@ -217,10 +217,11 @@ void main()
 	totaldepth = 1.0 - min(max(totaldepth * 0.002, 0.0), 0.6);
 	COLOUR *= totaldepth;*/
 
-	//COLOUR = floor(COLOUR * 16.0) / 16.0;
-
 	//Push HDR back into displayable ranges
 	COLOUR = COLOUR / (COLOUR + 1.0);
+
+	//Toon effect
+	//COLOUR = floor(COLOUR * 12.0) / 12.0;
 
 	//Faded corners
 	COLOUR *= mix(vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), min(1, 1.5 - length(UV)));

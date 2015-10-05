@@ -8,12 +8,13 @@ namespace LibVolume
 	{
 		Entity::Entity()
 		{
-			
+
 		}
-		
-		void Entity::tick()
+
+		void Entity::tick() const
 		{
-			this->state.tick();
+			((Entity*)this)->state.tick();
+			Object::tick();
 		}
 	}
 }

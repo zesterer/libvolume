@@ -15,18 +15,18 @@ namespace LibVolume
 			MeshBody,
 			VoxelBody
 		};
-		
+
 		//The general entity class
 		class Entity : public Object
 		{
 			public:
 				Physics::DynamicState state;
 				EntityType type;
-				
+
 				void* metadata;
-				
+
 				Entity();
-				virtual void tick() override;
+				virtual void tick() const;
 		};
 	}
 }
