@@ -26,6 +26,7 @@ namespace LibVolume
 				bool key_e; bool key_e_pressed;
 
 				bool key_f; bool key_f_pressed;
+				bool key_l; bool key_l_pressed;
 
 				bool key_up; bool key_up_pressed;
 				bool key_left; bool key_left_pressed;

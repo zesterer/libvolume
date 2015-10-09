@@ -6,6 +6,7 @@
 #include "renderer.h"
 #include "common/io.h"
 #include "engine/voxelterrain.h"
+#include "common/misc.h"
 
 namespace LibVolume
 {
@@ -19,8 +20,8 @@ namespace LibVolume
 			IO::output("Initialising GLBinding");
 			glbinding::Binding::initialize();
 
-			this->std_shader = new Structures::Shader();
-			this->std_shader->loadFromFiles("../libvolume/shaders/std-vertex-shader.glsl", "../libvolume/shaders/std-fragment-shader.glsl");
+			//this->std_shader = new Structures::Shader();
+			//this->std_shader->loadFromFiles("../libvolume/shaders/std-vertex-shader.glsl", "../libvolume/shaders/std-fragment-shader.glsl");
 
 			this->predeferred_shader = new Structures::Shader();
 			this->predeferred_shader->loadFromFiles("../libvolume/shaders/predeferred-vertex-shader.glsl", "../libvolume/shaders/predeferred-fragment-shader.glsl");
@@ -142,19 +143,24 @@ namespace LibVolume
 
 			//Find the uniform camera perspective matrix, then assign it
 			gl::GLuint perspective_matrix_id = gl::glGetUniformLocation(this->predeferred_shader->gl_id, "PERSPECTIVE_MATRIX");
-			gl::glUniformMatrix4fv(perspective_matrix_id, 1, gl::GL_FALSE, &this->camera->perspective_matrix[0][0]);
+			glm::f32mat4 perspective_matrix = (glm::f32mat4)this->camera->perspective_matrix;
+			gl::glUniformMatrix4fv(perspective_matrix_id, 1, gl::GL_FALSE, &perspective_matrix[0][0]);
 
 			//Find the uniform camera matrix, then assign it
 			gl::GLuint camera_matrix_id = gl::glGetUniformLocation(this->predeferred_shader->gl_id, "CAMERA_MATRIX");
-			gl::glUniformMatrix4fv(camera_matrix_id, 1, gl::GL_FALSE, &this->camera->matrix[0][0]);
+			glm::f32mat4 camera_matrix = (glm::f32mat4)this->camera->matrix;
+			gl::glUniformMatrix4fv(camera_matrix_id, 1, gl::GL_FALSE, &camera_matrix[0][0]);
 
 			//Find the uniform model vector, then assign it
 			gl::GLuint model_matrix_id = gl::glGetUniformLocation(this->predeferred_shader->gl_id, "MODEL_MATRIX");
-
 			//Create the correct cumulative matrix from the entity state and the mesh state
 			//NP: Why is this done in realtime? Not a slowdown atm because all entities are ticked every frame. Maybe add sleeping system 4 lower cpu?
-			glm::mat4x4 sum = glm::mat4(1.0f);
-			sum = actor->state.matrix * actor->mesh_state.matrix * sum;
+			//Modified is created for new coordinate system!
+			Engine::Physics::DynamicState modified = actor->state;
+			modified.position -= this->camera->state.position;
+			modified.update();
+			glm::mat4 sum = glm::mat4(1.0f);
+			sum = (glm::f32mat4)modified.matrix * (glm::f32mat4)actor->mesh_state.matrix * sum;
 			gl::glUniformMatrix4fv(model_matrix_id, 1, gl::GL_FALSE, &sum[0][0]);
 
 			//Find the uniform colour vector, then assign it
@@ -201,32 +207,49 @@ namespace LibVolume
 			gl::glUniform1i(position_tex_id, 0);
 			gl::glBindTexture(gl::GL_TEXTURE_2D, this->gbuffer.position_id);
 
+			//Get the mesh position buffer texture ready for rendering
+			gl::GLuint mesh_position_tex_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "MESH_POSITION_BUFFER");
+			gl::glActiveTexture(gl::GL_TEXTURE1);
+			gl::glUniform1i(mesh_position_tex_id, 1);
+			gl::glBindTexture(gl::GL_TEXTURE_2D, this->gbuffer.mesh_position_id);
+
 			//Get the normal buffer texture ready for rendering
 			gl::GLuint normal_tex_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "NORMAL_BUFFER");
-			gl::glActiveTexture(gl::GL_TEXTURE1);
-			gl::glUniform1i(normal_tex_id, 1);
+			gl::glActiveTexture(gl::GL_TEXTURE2);
+			gl::glUniform1i(normal_tex_id, 2);
 			gl::glBindTexture(gl::GL_TEXTURE_2D, this->gbuffer.normal_id);
 
 			//Get the colour buffer texture ready for rendering
 			gl::GLuint colour_tex_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "COLOUR_BUFFER");
-			gl::glActiveTexture(gl::GL_TEXTURE2);
-			gl::glUniform1i(colour_tex_id, 2);
+			gl::glActiveTexture(gl::GL_TEXTURE3);
+			gl::glUniform1i(colour_tex_id, 3);
 			gl::glBindTexture(gl::GL_TEXTURE_2D, this->gbuffer.colour_id);
 
 			//Get the material buffer texture ready for rendering
 			//TODO: This doesn't actually exist yet, since there's not material input
 			gl::GLuint material_tex_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "MATERIAL_BUFFER");
-			gl::glActiveTexture(gl::GL_TEXTURE3);
-			gl::glUniform1i(material_tex_id, 3);
+			gl::glActiveTexture(gl::GL_TEXTURE4);
+			gl::glUniform1i(material_tex_id, 4);
 			gl::glBindTexture(gl::GL_TEXTURE_2D, this->gbuffer.material_id);
 
 			//Find the uniform camera perspective matrix, then assign it
 			gl::GLuint perspective_matrix_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "PERSPECTIVE_MATRIX");
-			gl::glUniformMatrix4fv(perspective_matrix_id, 1, gl::GL_FALSE, &this->camera->perspective_matrix[0][0]);
+			glm::f32mat4 perspective_matrix = (glm::f32mat4)this->camera->perspective_matrix;
+			gl::glUniformMatrix4fv(perspective_matrix_id, 1, gl::GL_FALSE, &perspective_matrix[0][0]);
 
 			//Find the uniform camera matrix, then assign it
 			gl::GLuint camera_matrix_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "CAMERA_MATRIX");
-			gl::glUniformMatrix4fv(camera_matrix_id, 1, gl::GL_FALSE, &this->camera->matrix[0][0]);
+			glm::f32mat4 camera_matrix = (glm::f32mat4)this->camera->matrix;
+			gl::glUniformMatrix4fv(camera_matrix_id, 1, gl::GL_FALSE, &camera_matrix[0][0]);
+
+			//Find the uniform aspect ratio, then assign it
+			float aspect = (float)this->event_manager->getWindowSizeState()->width / (float)this->event_manager->getWindowSizeState()->height;
+			gl::GLuint aspect_ratio_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "ASPECT_RATIO");
+			gl::glUniform1f(aspect_ratio_id, aspect);
+
+			//Find the uniform Field of View, then assign it
+			gl::GLuint fov_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "FOV");
+			gl::glUniform1f(fov_id, this->camera->fov);
 
 			//Not currently done, since calculated from position. Potentially wasteful, since distance in fragment
 			// shader, but not too much of a problem since only calculated per-pixel, not per-fragment due to deferring
@@ -258,7 +281,7 @@ namespace LibVolume
 				if (clight->type == Structures::LightType::Directional)
 					light_vector_array[light] = glm::vec4(clight->position, 0.0);
 				else
-					light_vector_array[light] = glm::vec4(clight->position, 1.0);
+					light_vector_array[light] = glm::vec4(clight->position - this->camera->state.position, 1.0);
 
 				light_colour_array[light] = glm::vec4(clight->colour, clight->ambiance);
 

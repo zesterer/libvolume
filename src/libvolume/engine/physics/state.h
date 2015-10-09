@@ -8,6 +8,9 @@
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+//----LOCAL----
+#include "position.h"
+
 namespace LibVolume
 {
 	namespace Engine
@@ -17,27 +20,29 @@ namespace LibVolume
 			struct PointState
 			{
 				public:
-					glm::vec3 position = glm::vec3(0.0, 0.0, 0.0);
-					glm::mat4x4 matrix = glm::mat4(1.0f);
-					
+					//glm::vec3 position = glm::vec3(0.0, 0.0, 0.0);
+					glm::f64vec3 position = glm::f64vec3(0.0, 0.0, 0.0);
+					glm::f64mat4 matrix = glm::f64mat4(1.0f);
+
 					virtual void update();
 			};
-			
+
 			struct BodyState : public PointState
 			{
 				public:
-					glm::quat orientation = glm::quat(glm::vec3(0.0, 0.0, 0.0));
-					glm::vec3 scale = glm::vec3(1.0, 1.0, 1.0);
-					
+					glm::f64quat orientation = glm::f64quat(glm::f64vec3(0.0, 0.0, 0.0));
+					glm::f64vec3 scale = glm::f64vec3(1.0, 1.0, 1.0);
+
 					virtual void update() override;
 			};
-			
+
 			struct DynamicState : public BodyState
 			{
 				public:
-					glm::vec3 velocity = glm::vec3(0.0, 0.0, 0.0);
-					glm::quat spin = glm::quat(glm::vec3(0.0, 0.0, 0.0));
-				
+					glm::f64vec3 velocity = glm::f64vec3(0.0, 0.0, 0.0);
+					glm::f64quat spin = glm::f64quat(glm::f64vec3(0.0, 0.0, 0.0));
+					float mass = 1.0;
+
 					void tick();
 					virtual void update() override;
 			};

@@ -26,7 +26,7 @@ namespace LibVolume
 				void* metadata;
 
 				Entity();
-				virtual void tick() const;
+				void tick() override;
 		};
 	}
 }

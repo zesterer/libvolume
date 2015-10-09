@@ -57,9 +57,10 @@ namespace LibVolume
 
 		glm::vec3 VoxelField::getNormalAt(glm::vec3 pos)
 		{
-			float nx = this->getDensityAt(pos + glm::vec3(1.0, 0.0, 0.0) * 0.01f) - this->getDensityAt(pos);
-			float ny = this->getDensityAt(pos + glm::vec3(0.0, 1.0, 0.0) * 0.01f) - this->getDensityAt(pos);
-			float nz = this->getDensityAt(pos + glm::vec3(0.0, 0.0, 1.0) * 0.01f) - this->getDensityAt(pos);
+			float d = this->getDensityAt(pos);
+			float nx = this->getDensityAt(pos + glm::vec3(1.0, 0.0, 0.0) * 0.01f) - d;
+			float ny = this->getDensityAt(pos + glm::vec3(0.0, 1.0, 0.0) * 0.01f) - d;
+			float nz = this->getDensityAt(pos + glm::vec3(0.0, 0.0, 1.0) * 0.01f) - d;
 			return glm::normalize(glm::vec3(-nx, -ny, -nz));
 		}
 	}

@@ -10,6 +10,7 @@ namespace LibVolume
 		{
 			this->renderable = true;
 			this->rendertype = Render::RenderType::VoxelTerrain;
+			this->objecttype = ObjectType::VoxelTerrainObject;
 		}
 
 		bool VoxelTerrain::loadAt(glm::ivec3 pos)

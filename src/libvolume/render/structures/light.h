@@ -21,7 +21,7 @@ namespace LibVolume
 			{
 				public:
 					LightType type = Directional;
-					glm::vec3 position = glm::vec3(1.0, 1.0, 1.0);
+					glm::f64vec3 position = glm::vec3(1.0, 1.0, 1.0);
 					glm::vec3 colour = glm::vec3(1.0, 1.0, 1.0);
 					glm::vec3 direct = glm::vec3(1.0, 0.0, 0.0);
 					float spot_angle = 0.0;

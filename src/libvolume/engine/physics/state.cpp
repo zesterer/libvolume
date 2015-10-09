@@ -20,7 +20,7 @@ namespace LibVolume
 			void BodyState::update()
 			{
 				//Clear the matrix ready to change it
-				this->matrix = glm::mat4(1.0f);
+				this->matrix = glm::f64mat4(1.0f);
 
 				//Apply positional transformations
 				this->matrix = glm::translate(this->matrix, this->position);

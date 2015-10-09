@@ -30,6 +30,7 @@ namespace LibVolume
 					glm::vec3 colour = glm::vec3(1.0, 1.0, 1.0);
 
 					Mesh();
+					~Mesh();
 					bool loadFromOBJ(std::string filename, bool recalc_normals = false);
 					void buffer();
 					void clear();

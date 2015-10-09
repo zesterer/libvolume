@@ -8,7 +8,9 @@ namespace LibVolume
 	{
 		VoxelActor::VoxelActor(glm::ivec3 size) : Data::VoxelField(size), Actor()
 		{
-
+			//By default, voxel actors collide with one-another
+			this->collide = true;
+			this->objecttype = ObjectType::VoxelActorObject;
 		}
 
 		void VoxelActor::extract(MeshingAlgorithm algorithm) //Extract a mesh from the voxel field

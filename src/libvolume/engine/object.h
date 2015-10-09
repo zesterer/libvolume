@@ -8,6 +8,16 @@ namespace LibVolume
 		//Forward declaration of Realm
 		class Realm;
 
+		//Type
+		enum ObjectType
+		{
+			ObjectObject,
+			EntityObject,
+			ActorObject,
+			VoxelActorObject,
+			VoxelTerrainObject,
+		};
+
 		//Anything that inherits this class can be stored in a realm's object std::vector
 		//And also has the ability to tick
 		class Object
@@ -16,6 +26,9 @@ namespace LibVolume
 				//This property should only be true if the object inherits
 				//from the 'Render::RenderTarget' class.
 				bool renderable = false;
+				bool collide = false;
+
+				ObjectType objecttype = ObjectType::ObjectObject;
 
 				long timeout = -1;
 
@@ -23,7 +36,7 @@ namespace LibVolume
 
 				Object();
 				virtual ~Object();
-				virtual void tick() const;
+				virtual void tick();
 		};
 	}
 }

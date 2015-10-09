@@ -9,9 +9,10 @@ namespace LibVolume
 		{
 			this->renderable = true;
 			this->rendertype = Render::RenderType::Actor;
+			this->objecttype = ObjectType::ActorObject;
 		}
 
-		void Actor::tick() const
+		void Actor::tick()
 		{
 			((Actor*)this)->mesh_state.tick();
 			Entity::tick();

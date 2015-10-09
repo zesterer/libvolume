@@ -11,7 +11,7 @@ namespace LibVolume
 
 		}
 
-		void Entity::tick() const
+		void Entity::tick()
 		{
 			((Entity*)this)->state.tick();
 			Object::tick();

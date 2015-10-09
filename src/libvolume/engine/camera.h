@@ -17,10 +17,10 @@ namespace LibVolume
 			public:
 				Physics::DynamicState state;
 
-				glm::mat4 matrix;
-				glm::mat4 perspective_matrix;
+				glm::f64mat4 matrix;
+				glm::f64mat4 perspective_matrix;
 
-				float fov = 1.271;
+				float fov = 1.0;
 				float min_render = 1.0;
 				float max_render = 1000000.0;
 				float screen_ratio = 1.0;

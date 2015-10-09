@@ -30,6 +30,7 @@ namespace LibVolume
 			for (unsigned int count = 0; count < this->objects.size(); count ++)
 			{
 				Object* object = this->objects[count];
+				object->parent = this;
 
 				//Tick the object both as 'whatever it is', and as a base object.
 				object->tick();

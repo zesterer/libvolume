@@ -14,7 +14,7 @@ namespace LibVolume
 		{
 			public:
 				Actor(Render::Structures::Mesh* mesh = nullptr);
-				virtual void tick() const;
+				void tick() override;
 		};
 	}
 }

@@ -4,19 +4,24 @@ smooth in vec2 UV;
 
 out vec3 COLOUR;
 
+uniform float ASPECT_RATIO;
+uniform float FOV;
+
 uniform mat4 PERSPECTIVE_MATRIX;
 uniform mat4 CAMERA_MATRIX;
 
 uniform highp sampler2D POSITION_BUFFER;
+uniform highp sampler2D MESH_POSITION_BUFFER;
 uniform mediump sampler2D NORMAL_BUFFER;
 uniform lowp sampler2D COLOUR_BUFFER;
 
 const int LIGHT_NUMBER = 32;
-uniform lowp vec4 LIGHT_VECTOR[LIGHT_NUMBER];
+uniform highp vec4 LIGHT_VECTOR[LIGHT_NUMBER];
 uniform lowp vec4 LIGHT_COLOUR[LIGHT_NUMBER];
 uniform lowp vec4 LIGHT_DIRECT[LIGHT_NUMBER];
 
 highp vec4  BUFFER_POSITION;
+highp vec4  BUFFER_MESH_POSITION;
 lowp vec4  BUFFER_NORMAL;
 lowp vec3  BUFFER_COLOUR;
 highp float CURRENT_DEPTH;
@@ -124,8 +129,9 @@ void main()
 
 	//pos += 0.15 * vec2(getPerlin(vec4(UV / 6.0, 0.0, 0.0), 1.0, 3.0, 1.0), getPerlin(vec4(UV / 6.0, 0.0, 1.0), 1.0, 3.0, 1.0));
 
-	BUFFER_POSITION = vec4(texture(POSITION_BUFFER, pos).rgb, 1.0);
-	BUFFER_NORMAL = vec4(normalize(texture(NORMAL_BUFFER, pos).rgb), 0.0);
+	BUFFER_POSITION = vec4(texture(POSITION_BUFFER, pos).xyz, 1.0);
+	BUFFER_MESH_POSITION = vec4(texture(MESH_POSITION_BUFFER, pos).xyz, 1.0);
+	BUFFER_NORMAL = vec4(normalize(texture(NORMAL_BUFFER, pos).xyz), 0.0);
 	BUFFER_COLOUR = texture(COLOUR_BUFFER, pos).rgb;
 
 	//Decode back into HDR
@@ -179,22 +185,24 @@ void main()
 		}
 	}
 
-	float p = 0.8 + getPerlin(BUFFER_POSITION / 500.0, 1.0, 4.0, 1.0) / 2.5;
-
 	if (BUFFER_POSITION.xyz == vec3(0.0, 0.0, 0.0))
 	{
 		COLOUR = vec3(0.0, 0.0, 0.0);
 
-		float a = getPerlin(inverse(CAMERA_MATRIX * PERSPECTIVE_MATRIX) * normalize(vec4(-UV.x, -UV.y, 1.0, 0.0)) * 1.0, 5.0, 2.0, 2.0);
-
 		//STARHACK
+		float a = 0.0;//getPerlin(inverse(CAMERA_MATRIX) * normalize(vec4(-UV.x * ASPECT_RATIO * (FOV / 1.571), -UV.y * (FOV / 1.571), 1.0, 0.0)) * 1.0, 3.0, 2.0, 2.0);
+
 		if (a > 0.85)
 		{
 			COLOUR = vec3(1.0, 1.0, 1.0);
 		}
 	}
 	else
+	{
+		float p = 0.8 + getPerlin(BUFFER_MESH_POSITION / 10.0, 1.0, 4.0, 1.0) / 2.5;
+
 		COLOUR = BUFFER_COLOUR * p * diffuse + specular;
+	}
 
 	/*for (float x = -1.0; x < 1.0; x += 1.0)
 	{

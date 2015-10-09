@@ -12,7 +12,7 @@ namespace LibVolume
 
 		}
 
-		void Object::tick() const
+		void Object::tick()
 		{
 			if (((Object*)this)->timeout > 0)
 				((Object*)this)->timeout --;
