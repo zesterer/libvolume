@@ -182,7 +182,7 @@ namespace LibVolume
 				gl::glDisableVertexAttribArray(count);
 		}
 
-		void Renderer::postRender(RenderMode render_mode)
+		void Renderer::postRender(RenderMode render_mode, glm::vec3 background_colour)
 		{
             this->preRender(render_mode);
 
@@ -250,6 +250,10 @@ namespace LibVolume
 			//Find the uniform Field of View, then assign it
 			gl::GLuint fov_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "FOV");
 			gl::glUniform1f(fov_id, this->camera->fov);
+
+			//Find the background colour, then assign it
+			gl::GLuint background_colour_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "BACKGROUND_COLOUR");
+			gl::glUniform3f(background_colour_id, background_colour.r, background_colour.g, background_colour.b);
 
 			//Not currently done, since calculated from position. Potentially wasteful, since distance in fragment
 			// shader, but not too much of a problem since only calculated per-pixel, not per-fragment due to deferring

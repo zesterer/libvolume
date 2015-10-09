@@ -26,6 +26,8 @@ namespace LibVolume
 				Render::Renderer renderer;
 				Window::EventManager* event_manager;
 
+				glm::vec3 background_colour = glm::vec3(1.0, 1.0, 1.0);
+
 				//Light list
 				std::vector<Render::Structures::Light*> light_list;
 

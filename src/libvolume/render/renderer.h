@@ -39,7 +39,7 @@ namespace LibVolume
 
 				Renderer();
 				void preRender(RenderMode render_mode);
-				void postRender(RenderMode render_mode);
+				void postRender(RenderMode render_mode, glm::vec3 background_colour);
 				void renderTarget(RenderTarget* target);
 				void renderActor(Engine::Actor* actor);
 				void linkTo(Window::Window& window);

@@ -6,6 +6,7 @@ out vec3 COLOUR;
 
 uniform float ASPECT_RATIO;
 uniform float FOV;
+uniform vec3 BACKGROUND_COLOUR;
 
 uniform mat4 PERSPECTIVE_MATRIX;
 uniform mat4 CAMERA_MATRIX;
@@ -187,7 +188,7 @@ void main()
 
 	if (BUFFER_POSITION.xyz == vec3(0.0, 0.0, 0.0))
 	{
-		COLOUR = vec3(0.0, 0.0, 0.0);
+		COLOUR = BACKGROUND_COLOUR;
 
 		//STARHACK
 		float a = 0.0;//getPerlin(inverse(CAMERA_MATRIX) * normalize(vec4(-UV.x * ASPECT_RATIO * (FOV / 1.571), -UV.y * (FOV / 1.571), 1.0, 0.0)) * 1.0, 3.0, 2.0, 2.0);
