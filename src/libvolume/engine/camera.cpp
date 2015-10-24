@@ -9,7 +9,7 @@ namespace LibVolume
 	{
 		Camera::Camera()
 		{
-			this->state.position = glm::vec3(-20.0, 0.0, 0.0);
+			//this->state.position = glm::vec3(-20.0, 0.0, 0.0);
 			this->state.orientation = glm::quat(glm::vec3(0.0, PI / 2.0, PI / 2.0));
 		}
 

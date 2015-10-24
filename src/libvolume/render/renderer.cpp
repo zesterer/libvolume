@@ -151,6 +151,12 @@ namespace LibVolume
 			glm::f32mat4 camera_matrix = (glm::f32mat4)this->camera->matrix;
 			gl::glUniformMatrix4fv(camera_matrix_id, 1, gl::GL_FALSE, &camera_matrix[0][0]);
 
+			gl::GLuint near_dist_id = gl::glGetUniformLocation(this->predeferred_shader->gl_id, "NEAR_DIST");
+			gl::glUniform1f(near_dist_id, this->camera->min_render);
+
+			gl::GLuint far_dist_id = gl::glGetUniformLocation(this->predeferred_shader->gl_id, "FAR_DIST");
+			gl::glUniform1f(far_dist_id, this->camera->max_render);
+
 			//Find the uniform model vector, then assign it
 			gl::GLuint model_matrix_id = gl::glGetUniformLocation(this->predeferred_shader->gl_id, "MODEL_MATRIX");
 			//Create the correct cumulative matrix from the entity state and the mesh state
@@ -175,7 +181,13 @@ namespace LibVolume
 			//glUniform1i(glGetUniformLocation(this->std_shader->gl_id, "MATERIAL_EFFECTS"), material->effects);
 
 			//Draw the model
+			if (this->wireframe)
+				gl::glPolygonMode(gl::GL_FRONT_AND_BACK, gl::GL_LINE);
+
 			gl::glDrawArrays(actor->mesh->mode, 0, actor->mesh->polygons.size() * 3);
+
+			if (this->wireframe)
+				gl::glPolygonMode(gl::GL_FRONT_AND_BACK, gl::GL_FILL);
 
 			//Disable all the vertex attribute arrays again
 			for (int count = 0; count < 4; count ++)

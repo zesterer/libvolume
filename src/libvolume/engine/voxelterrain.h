@@ -22,7 +22,7 @@ namespace LibVolume
 				bool loadAt(glm::ivec3 pos) override;
 				VoxelTerrainChild* getAt(glm::ivec3 pos) override;
 				Data::Voxel* getVoxelAt(glm::ivec3 pos);
-				virtual void tick() const;
+				void tick() override;
 		};
 	}
 }

@@ -7,29 +7,29 @@ uniform   highp   mat4      PERSPECTIVE_MATRIX;
 uniform   highp   mat4      CAMERA_MATRIX;
 uniform   highp   mat4      MODEL_MATRIX;
 
-uniform   lowp    vec3      MESH_COLOUR;
+uniform   highp   vec3      MESH_COLOUR;
 
-uniform   lowp    vec4      LIGHT_VECTOR[16];
-uniform   lowp    vec4      LIGHT_COLOUR[16];
+uniform   highp   vec4      LIGHT_VECTOR[16];
+uniform   highp   vec4      LIGHT_COLOUR[16];
 
-uniform   lowp    vec4      MATERIAL_DATA;
+uniform   highp   vec4      MATERIAL_DATA;
 uniform           int       MATERIAL_EFFECTS;
 
 uniform           sampler2D TEXTURE_SAMPLER;
 
 //----INPUTS----
 smooth in highp   vec4      F_W_POSITION;
-smooth in lowp    vec3      F_W_COLOUR;
-smooth in mediump vec2      F_W_UV;
-smooth in lowp    vec4      F_W_NORMAL;
+smooth in highp   vec3      F_W_COLOUR;
+smooth in highp   vec2      F_W_UV;
+smooth in highp   vec4      F_W_NORMAL;
 smooth in highp   vec4      F_M_POSITION;
-smooth in lowp    vec4      F_M_NORMAL;
+smooth in highp   vec4      F_M_NORMAL;
 
 //----OUTPUTS----
 layout (location = 0) out highp vec3 POSITION_BUFFER;
 layout (location = 1) out highp vec3 MESH_POSITION_BUFFER;
-layout (location = 2) out lowp vec3 NORMAL_BUFFER;
-layout (location = 3) out lowp vec3 COLOUR_BUFFER;
+layout (location = 2) out highp vec3 NORMAL_BUFFER;
+layout (location = 3) out highp vec3 COLOUR_BUFFER;
 
 vec3 getTexture()
 {

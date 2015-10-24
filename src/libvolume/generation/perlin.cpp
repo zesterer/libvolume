@@ -17,15 +17,15 @@ namespace LibVolume
 			glm::vec3 mpos = glm::mod(glm::vec3(pos.x, pos.y, pos.z), 1.0f);
 			pos = glm::floor(pos);
 
-			float c000 = this->getRandom(pos + glm::vec4(0.0, 0.0, 0.0, 0.0));
-			float c100 = this->getRandom(pos + glm::vec4(1.0, 0.0, 0.0, 0.0));
-			float c010 = this->getRandom(pos + glm::vec4(0.0, 1.0, 0.0, 0.0));
-			float c110 = this->getRandom(pos + glm::vec4(1.0, 1.0, 0.0, 0.0));
+			float c000 = PerlinNoise::getRandom(pos + glm::vec4(0.0, 0.0, 0.0, 0.0));
+			float c100 = PerlinNoise::getRandom(pos + glm::vec4(1.0, 0.0, 0.0, 0.0));
+			float c010 = PerlinNoise::getRandom(pos + glm::vec4(0.0, 1.0, 0.0, 0.0));
+			float c110 = PerlinNoise::getRandom(pos + glm::vec4(1.0, 1.0, 0.0, 0.0));
 
-			float c001 = this->getRandom(pos + glm::vec4(0.0, 0.0, 1.0, 0.0));
-			float c101 = this->getRandom(pos + glm::vec4(1.0, 0.0, 1.0, 0.0));
-			float c011 = this->getRandom(pos + glm::vec4(0.0, 1.0, 1.0, 0.0));
-			float c111 = this->getRandom(pos + glm::vec4(1.0, 1.0, 1.0, 0.0));
+			float c001 = PerlinNoise::getRandom(pos + glm::vec4(0.0, 0.0, 1.0, 0.0));
+			float c101 = PerlinNoise::getRandom(pos + glm::vec4(1.0, 0.0, 1.0, 0.0));
+			float c011 = PerlinNoise::getRandom(pos + glm::vec4(0.0, 1.0, 1.0, 0.0));
+			float c111 = PerlinNoise::getRandom(pos + glm::vec4(1.0, 1.0, 1.0, 0.0));
 
 			float eX00 = glm::mix(c000, c100, mpos.x);
 			float eX10 = glm::mix(c010, c110, mpos.x);
@@ -45,7 +45,7 @@ namespace LibVolume
 			float val = 0.0;
 
 			for (float x = initial; x < initial + octaves; x += skip)
-				val += this->getNoise(pos, x + 2.0) / glm::pow(2.0, x - initial);
+				val += PerlinNoise::getNoise(pos, x + 2.0) / glm::pow(2.0, x - initial);
 
 			return val;
 		}
@@ -54,8 +54,8 @@ namespace LibVolume
 		{
 			glm::vec2 noise;
 
-			noise.x = this->getPerlin(pos + glm::vec4(0.0, 0.0, 0.0, 0.0), initial, octaves, skip);
-			noise.y = this->getPerlin(pos + glm::vec4(0.0, 0.0, 0.0, 1.0), initial, octaves, skip);
+			noise.x = PerlinNoise::getPerlin(pos + glm::vec4(0.0, 0.0, 0.0, 0.0), initial, octaves, skip);
+			noise.y = PerlinNoise::getPerlin(pos + glm::vec4(0.0, 0.0, 0.0, 1.0), initial, octaves, skip);
 
 			return noise;
 		}
@@ -64,9 +64,9 @@ namespace LibVolume
 		{
 			glm::vec3 noise;
 
-			noise.x = this->getPerlin(pos + glm::vec4(0.0, 0.0, 0.0, 0.0), initial, octaves, skip);
-			noise.y = this->getPerlin(pos + glm::vec4(0.0, 0.0, 0.0, 1.0), initial, octaves, skip);
-			noise.z = this->getPerlin(pos + glm::vec4(0.0, 0.0, 0.0, 2.0), initial, octaves, skip);
+			noise.x = PerlinNoise::getPerlin(pos + glm::vec4(0.0, 0.0, 0.0, 0.0), initial, octaves, skip);
+			noise.y = PerlinNoise::getPerlin(pos + glm::vec4(0.0, 0.0, 0.0, 1.0), initial, octaves, skip);
+			noise.z = PerlinNoise::getPerlin(pos + glm::vec4(0.0, 0.0, 0.0, 2.0), initial, octaves, skip);
 
 			return noise;
 		}

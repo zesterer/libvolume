@@ -35,14 +35,27 @@ namespace LibVolume
 				//Tick the object both as 'whatever it is', and as a base object.
 				object->tick();
 
+				//Collide with other objects
+				if (object->can_collide)
+				{
+					for (unsigned int count2 = 0; count2 < this->objects.size(); count2 ++)
+					{
+						Object* other = this->objects[count2];
+
+						if (other != object && other->can_collide)
+						{
+							Entity& other_entity = *dynamic_cast<Entity*>(other);
+							dynamic_cast<Entity*>(object)->collide(other_entity);
+						}
+					}
+				}
+
 				//Delete the object if it needs deleting
 				if (object->timeout == 0)
 				{
 					this->removeObject(*object);
 					delete object;
 				}
-
-				//IO::output("Ticked an object");
 			}
 
 			this->postTick();

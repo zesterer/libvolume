@@ -13,18 +13,18 @@ uniform mat4 CAMERA_MATRIX;
 
 uniform highp sampler2D POSITION_BUFFER;
 uniform highp sampler2D MESH_POSITION_BUFFER;
-uniform mediump sampler2D NORMAL_BUFFER;
-uniform lowp sampler2D COLOUR_BUFFER;
+uniform highp sampler2D NORMAL_BUFFER;
+uniform highp sampler2D COLOUR_BUFFER;
 
 const int LIGHT_NUMBER = 32;
 uniform highp vec4 LIGHT_VECTOR[LIGHT_NUMBER];
-uniform lowp vec4 LIGHT_COLOUR[LIGHT_NUMBER];
-uniform lowp vec4 LIGHT_DIRECT[LIGHT_NUMBER];
+uniform highp vec4 LIGHT_COLOUR[LIGHT_NUMBER];
+uniform highp vec4 LIGHT_DIRECT[LIGHT_NUMBER];
 
 highp vec4  BUFFER_POSITION;
 highp vec4  BUFFER_MESH_POSITION;
-lowp vec4  BUFFER_NORMAL;
-lowp vec3  BUFFER_COLOUR;
+highp vec4  BUFFER_NORMAL;
+highp vec3  BUFFER_COLOUR;
 highp float CURRENT_DEPTH;
 
 float getSpecular(vec3 vector)
@@ -200,7 +200,7 @@ void main()
 	}
 	else
 	{
-		float p = 0.8 + getPerlin(BUFFER_MESH_POSITION / 10.0, 1.0, 4.0, 1.0) / 2.5;
+		float p = 0.8;// + getPerlin(BUFFER_MESH_POSITION / 10.0, 1.0, 4.0, 1.0) / 2.5;
 
 		COLOUR = BUFFER_COLOUR * p * diffuse + specular;
 	}
@@ -236,7 +236,7 @@ void main()
 	COLOUR = COLOUR / (COLOUR + 1.0);
 
 	//Toon effect
-	//COLOUR = floor(COLOUR * 12.0) / 12.0;
+	//COLOUR = floor(COLOUR * 6.0) / 6.0;
 
 	//Faded corners
 	COLOUR *= mix(vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), min(1, 1.5 - length(UV)));

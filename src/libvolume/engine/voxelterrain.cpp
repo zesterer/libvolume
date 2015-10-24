@@ -26,10 +26,14 @@ namespace LibVolume
 			dynamic_cast<VoxelTerrainChild*>(tmp)->parent = this;
 
 			//Set it's state
-			dynamic_cast<VoxelTerrainChild*>(tmp)->mesh_state.position = glm::vec3((float)(pos.x * this->child_size.x), (float)(pos.y * this->child_size.y), (float)(pos.z * this->child_size.z));
+			dynamic_cast<VoxelTerrainChild*>(tmp)->mesh_state.position = pos * this->child_size;
 
 			//Set it's position
 			dynamic_cast<VoxelTerrainChild*>(tmp)->location = pos * this->child_size;
+
+			//TODO
+			//Make sure it meshes correctly
+			dynamic_cast<VoxelTerrainChild*>(tmp)->mesh_first_plane = false;
 
 			IO::output("Loaded region!");
 
@@ -60,12 +64,13 @@ namespace LibVolume
 				return &this->empty;
 		}
 
-		void VoxelTerrain::tick() const
+		void VoxelTerrain::tick()
 		{
 			for (auto region_pair : this->children)
 			{
-				Engine::VoxelActor* region = dynamic_cast<VoxelTerrainChild*>(region_pair.second);
+				Engine::VoxelTerrainChild* region = dynamic_cast<VoxelTerrainChild*>(region_pair.second);
 				region->state = this->state;
+				region->mesh_state.tick();
 				region->tick();
 			}
 		}

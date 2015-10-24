@@ -32,6 +32,8 @@ namespace LibVolume
 				//Screen quad
 				gl::GLuint gl_quad_id;
 
+				bool wireframe = false;
+
 				Engine::Camera* camera;
 
 				//Light list - REFERENCE, not actual light list

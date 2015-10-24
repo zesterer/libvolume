@@ -26,7 +26,9 @@ namespace LibVolume
 				//This property should only be true if the object inherits
 				//from the 'Render::RenderTarget' class.
 				bool renderable = false;
-				bool collide = false;
+				//This property should only be true if the object inherits
+				//from the 'Entity' class.
+				bool can_collide = false;
 
 				ObjectType objecttype = ObjectType::ObjectObject;
 

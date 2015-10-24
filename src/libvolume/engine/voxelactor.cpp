@@ -9,11 +9,11 @@ namespace LibVolume
 		VoxelActor::VoxelActor(glm::ivec3 size) : Data::VoxelField(size), Actor()
 		{
 			//By default, voxel actors collide with one-another
-			this->collide = true;
+			this->can_collide = true;
 			this->objecttype = ObjectType::VoxelActorObject;
 		}
 
-		void VoxelActor::extract(MeshingAlgorithm algorithm) //Extract a mesh from the voxel field
+		void VoxelActor::extract(MeshingAlgorithm algorithm, bool smooth_normals) //Extract a mesh from the voxel field
 		{
 			IO::output("Extracting mesh from voxel field of size " + std::to_string(this->size.x * this->size.y * this->size.z));
 
@@ -30,13 +30,13 @@ namespace LibVolume
 
 				case (MeshingAlgorithm::MarchingCubes):
 				{
-					this->extractMarchingCubes(true);
+					this->extractMarchingCubes(true, smooth_normals);
 					break;
 				}
 
 				case (MeshingAlgorithm::SurfaceNets):
 				{
-					this->extractMarchingCubes(false);
+					this->extractMarchingCubes(false, smooth_normals);
 					break;
 				}
 			}
@@ -59,22 +59,22 @@ namespace LibVolume
 						if (voxel->density > this->threshold)
 						{
 							//Bottom
-							if (this->getAt({count.x, count.y, count.z - 1})->density < this->threshold)
+							if (this->getAt({count.x, count.y, count.z - 1})->density <= this->threshold)
 								this->addQuad(pos + CubeVec100, pos + CubeVec110, pos + CubeVec010, pos + CubeVec000);
 							//Top
-							if (this->getAt({count.x, count.y, count.z + 1})->density < this->threshold)
+							if (this->getAt({count.x, count.y, count.z + 1})->density <= this->threshold)
 								this->addQuad(pos + CubeVec001, pos + CubeVec011, pos + CubeVec111, pos + CubeVec101);
 							//Left
-							if (this->getAt({count.x - 1, count.y, count.z})->density < this->threshold)
+							if (this->getAt({count.x - 1, count.y, count.z})->density <= this->threshold)
 								this->addQuad(pos + CubeVec000, pos + CubeVec010, pos + CubeVec011, pos + CubeVec001);
 							//Right
-							if (this->getAt({count.x + 1, count.y, count.z})->density < this->threshold)
+							if (this->getAt({count.x + 1, count.y, count.z})->density <= this->threshold)
 								this->addQuad(pos + CubeVec101, pos + CubeVec111, pos + CubeVec110, pos + CubeVec100);
 							//Back
-							if (this->getAt({count.x, count.y - 1, count.z})->density < this->threshold)
+							if (this->getAt({count.x, count.y - 1, count.z})->density <= this->threshold)
 								this->addQuad(pos + CubeVec000, pos + CubeVec001, pos + CubeVec101, pos + CubeVec100);
 							//Front
-							if (this->getAt({count.x, count.y + 1, count.z})->density < this->threshold)
+							if (this->getAt({count.x, count.y + 1, count.z})->density <= this->threshold)
 								this->addQuad(pos + CubeVec110, pos + CubeVec111, pos + CubeVec011, pos + CubeVec010);
 						}
 					}
@@ -109,7 +109,7 @@ namespace LibVolume
 			this->mesh->polygons.push_back(p2);
 		}
 
-		void VoxelActor::extractMarchingCubes(bool use_density)
+		void VoxelActor::extractMarchingCubes(bool use_density, bool smooth_normals)
 		{
 			glm::ivec3 count;
 			glm::ivec3 initial;
@@ -130,14 +130,14 @@ namespace LibVolume
 
 						//Find the configuration index based on surrounding voxels
 						unsigned char index = 0;
-						if (this->getAt(count + glm::ivec3(0, 0, 0))->density > this->threshold) index |= 0b00000001;
-						if (this->getAt(count + glm::ivec3(1, 0, 0))->density > this->threshold) index |= 0b00000010;
-						if (this->getAt(count + glm::ivec3(1, 1, 0))->density > this->threshold) index |= 0b00000100;
-						if (this->getAt(count + glm::ivec3(0, 1, 0))->density > this->threshold) index |= 0b00001000;
-						if (this->getAt(count + glm::ivec3(0, 0, 1))->density > this->threshold) index |= 0b00010000;
-						if (this->getAt(count + glm::ivec3(1, 0, 1))->density > this->threshold) index |= 0b00100000;
-						if (this->getAt(count + glm::ivec3(1, 1, 1))->density > this->threshold) index |= 0b01000000;
-						if (this->getAt(count + glm::ivec3(0, 1, 1))->density > this->threshold) index |= 0b10000000;
+						if (this->getAt(count + glm::ivec3(0, 0, 0))->density >= this->threshold) index |= 0b00000001;
+						if (this->getAt(count + glm::ivec3(1, 0, 0))->density >= this->threshold) index |= 0b00000010;
+						if (this->getAt(count + glm::ivec3(1, 1, 0))->density >= this->threshold) index |= 0b00000100;
+						if (this->getAt(count + glm::ivec3(0, 1, 0))->density >= this->threshold) index |= 0b00001000;
+						if (this->getAt(count + glm::ivec3(0, 0, 1))->density >= this->threshold) index |= 0b00010000;
+						if (this->getAt(count + glm::ivec3(1, 0, 1))->density >= this->threshold) index |= 0b00100000;
+						if (this->getAt(count + glm::ivec3(1, 1, 1))->density >= this->threshold) index |= 0b01000000;
+						if (this->getAt(count + glm::ivec3(0, 1, 1))->density >= this->threshold) index |= 0b10000000;
 
 						float density_cube[8];
 						density_cube[0b000] = this->getAt(count + glm::ivec3(0, 0, 0))->density;
@@ -162,9 +162,14 @@ namespace LibVolume
 								polygons[poly].b.position += pos;
 								polygons[poly].c.position += pos;
 
-								polygons[poly].a.normal = this->getNormalAt(polygons[poly].a.position);
-								polygons[poly].b.normal = this->getNormalAt(polygons[poly].b.position);
-								polygons[poly].c.normal = this->getNormalAt(polygons[poly].c.position);
+								if (smooth_normals)
+								{
+									polygons[poly].a.normal = this->getNormalAt(polygons[poly].a.position);
+									polygons[poly].b.normal = this->getNormalAt(polygons[poly].b.position);
+									polygons[poly].c.normal = this->getNormalAt(polygons[poly].c.position);
+								}
+								else
+									polygons[poly].correctNormals();
 							}
 
 							//Append them all to the current mesh

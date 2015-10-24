@@ -27,6 +27,7 @@ namespace LibVolume
 
 				Entity();
 				void tick() override;
+				virtual void collide(Entity& entity);
 		};
 	}
 }
