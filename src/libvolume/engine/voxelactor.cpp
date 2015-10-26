@@ -152,7 +152,7 @@ namespace LibVolume
 						if (index != 0 && index != 255) //Make sure it's not fully empty or fully filled
 						{
 							//Get the configuration
-							std::vector<Render::Structures::Polygon> polygons = this->getMarchingCubesPolygonConfiguration(index, density_cube, use_density);
+							std::vector<Render::Structures::Polygon> polygons = this->getMarchingCubesPolygonConfiguration(index, density_cube, use_density, this->getAt(count)->type);
 
 							//World::Generation::PerlinNoise noise;
 							//Move all those polygons to their correct position in the mesh
@@ -180,7 +180,7 @@ namespace LibVolume
 			}
 		}
 
-		std::vector<Render::Structures::Polygon> VoxelActor::getMarchingCubesPolygonConfiguration(unsigned char index, float density[8], bool use_density)
+		std::vector<Render::Structures::Polygon> VoxelActor::getMarchingCubesPolygonConfiguration(unsigned char index, float density[8], bool use_density, int type)
 		{
 			std::vector<Render::Structures::Polygon> polygons;
 			int triangles[16];
@@ -190,6 +190,8 @@ namespace LibVolume
 			{
 				triangles[c] = MC_TRITABLE[index][c];
 			}
+
+			glm::vec3 voxel_colour = this->getVoxelColour(type);
 
 			//Add the polygons
 			for (unsigned char c = 0; c < 15; c += 3)
@@ -226,9 +228,9 @@ namespace LibVolume
 						poly.a.position = glm::mix(MC_EDGES[triangles[c + 2]][0], MC_EDGES[triangles[c + 2]][1], x);
 					}
 
-					poly.a.colour = glm::vec3(1.0, 1.0, 1.0);
-					poly.b.colour = glm::vec3(1.0, 1.0, 1.0);
-					poly.c.colour = glm::vec3(1.0, 1.0, 1.0);
+					poly.a.colour = voxel_colour;
+					poly.b.colour = voxel_colour;
+					poly.c.colour = voxel_colour;
 
 					//poly.correctNormals();
 
@@ -237,6 +239,14 @@ namespace LibVolume
 			}
 
 			return polygons;
+		}
+
+		glm::vec3 VoxelActor::getVoxelColour(int type)
+		{
+			if (this->colour_table.size() <= type)
+				return glm::vec3(1.0f, 1.0f, 1.0f);
+
+			return this->colour_table[type];
 		}
 	}
 }

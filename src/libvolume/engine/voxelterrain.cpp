@@ -6,11 +6,14 @@ namespace LibVolume
 {
 	namespace Engine
 	{
-		VoxelTerrain::VoxelTerrain(glm::ivec3 child_size) : Data::VoxelCluster(child_size)
+		VoxelTerrain::VoxelTerrain(glm::ivec3 child_size, MeshingAlgorithm algorithm, bool smooth_normals) : Data::VoxelCluster(child_size)
 		{
 			this->renderable = true;
 			this->rendertype = Render::RenderType::VoxelTerrain;
 			this->objecttype = ObjectType::VoxelTerrainObject;
+
+			this->meshing_algorithm = algorithm;
+			this->smooth_normals = smooth_normals;
 		}
 
 		bool VoxelTerrain::loadAt(glm::ivec3 pos)
@@ -68,10 +71,25 @@ namespace LibVolume
 		{
 			for (auto region_pair : this->children)
 			{
-				Engine::VoxelTerrainChild* region = dynamic_cast<VoxelTerrainChild*>(region_pair.second);
+				VoxelTerrainChild* region = dynamic_cast<VoxelTerrainChild*>(region_pair.second);
 				region->state = this->state;
 				region->mesh_state.tick();
 				region->tick();
+			}
+		}
+
+		void VoxelTerrain::reMesh(glm::ivec3 pos)
+		{
+			for (int x = 0; x < 2; x ++)
+			{
+				for (int y = 0; y < 2; y ++)
+				{
+					for (int z = 0; z < 2; z ++)
+					{
+						if (this->existsAt(pos - glm::ivec3(x, y, z)))
+							this->getAt(pos - glm::ivec3(x, y, z))->extract(this->meshing_algorithm, this->smooth_normals);
+					}
+				}
 			}
 		}
 	}

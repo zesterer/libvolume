@@ -21,8 +21,8 @@ namespace LibVolume
 				glm::f64mat4 perspective_matrix;
 
 				float fov = 1.0;
-				float min_render = 0.005;
-				float max_render = 5000.0;
+				float min_render = 0.00001;
+				float max_render = 100.0;
 				float screen_ratio = 1.0;
 
 				Camera();
