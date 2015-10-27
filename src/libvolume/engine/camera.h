@@ -24,6 +24,7 @@ namespace LibVolume
 				float min_render = 0.00001;
 				float max_render = 100.0;
 				float screen_ratio = 1.0;
+				float fog_distance = 64.0f; //Make equal to 0.0 to remove fog
 
 				Camera();
 				void update();

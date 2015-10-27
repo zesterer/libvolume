@@ -6,7 +6,10 @@ out vec3 COLOUR;
 
 uniform float ASPECT_RATIO;
 uniform float FOV;
-uniform vec3 BACKGROUND_COLOUR;
+uniform vec3  BACKGROUND_COLOUR;
+uniform float FOG_DISTANCE;
+
+uniform int TIME;
 
 uniform mat4 PERSPECTIVE_MATRIX;
 uniform mat4 CAMERA_MATRIX;
@@ -232,6 +235,10 @@ void main()
 	totaldepth = 1.0 - min(max(totaldepth * 0.002, 0.0), 0.6);
 	COLOUR *= totaldepth;*/
 
+	//Add fog
+	if (FOG_DISTANCE > 0.0)
+		COLOUR = mix(COLOUR, BACKGROUND_COLOUR, min(1.0, pow(CURRENT_DEPTH / FOG_DISTANCE, 3.5)));
+
 	//Push HDR back into displayable ranges
 	COLOUR = COLOUR / (COLOUR + 1.0);
 
@@ -239,5 +246,5 @@ void main()
 	//COLOUR = floor(COLOUR * 6.0) / 6.0;
 
 	//Faded corners
-	COLOUR *= mix(vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), min(1, 1.5 - length(UV)));
+	COLOUR *= mix(vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), min(1, 2.5 - length(UV)));
 }

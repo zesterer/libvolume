@@ -60,31 +60,33 @@ namespace LibVolume
 						{
 							//Bottom
 							if (this->getAt({count.x, count.y, count.z - 1})->density <= this->threshold)
-								this->addQuad(pos + CubeVec100, pos + CubeVec110, pos + CubeVec010, pos + CubeVec000);
+								this->addQuad(pos + CubeVec100, pos + CubeVec110, pos + CubeVec010, pos + CubeVec000, voxel->type);
 							//Top
 							if (this->getAt({count.x, count.y, count.z + 1})->density <= this->threshold)
-								this->addQuad(pos + CubeVec001, pos + CubeVec011, pos + CubeVec111, pos + CubeVec101);
+								this->addQuad(pos + CubeVec001, pos + CubeVec011, pos + CubeVec111, pos + CubeVec101, voxel->type);
 							//Left
 							if (this->getAt({count.x - 1, count.y, count.z})->density <= this->threshold)
-								this->addQuad(pos + CubeVec000, pos + CubeVec010, pos + CubeVec011, pos + CubeVec001);
+								this->addQuad(pos + CubeVec000, pos + CubeVec010, pos + CubeVec011, pos + CubeVec001, voxel->type);
 							//Right
 							if (this->getAt({count.x + 1, count.y, count.z})->density <= this->threshold)
-								this->addQuad(pos + CubeVec101, pos + CubeVec111, pos + CubeVec110, pos + CubeVec100);
+								this->addQuad(pos + CubeVec101, pos + CubeVec111, pos + CubeVec110, pos + CubeVec100, voxel->type);
 							//Back
 							if (this->getAt({count.x, count.y - 1, count.z})->density <= this->threshold)
-								this->addQuad(pos + CubeVec000, pos + CubeVec001, pos + CubeVec101, pos + CubeVec100);
+								this->addQuad(pos + CubeVec000, pos + CubeVec001, pos + CubeVec101, pos + CubeVec100, voxel->type);
 							//Front
 							if (this->getAt({count.x, count.y + 1, count.z})->density <= this->threshold)
-								this->addQuad(pos + CubeVec110, pos + CubeVec111, pos + CubeVec011, pos + CubeVec010);
+								this->addQuad(pos + CubeVec110, pos + CubeVec111, pos + CubeVec011, pos + CubeVec010, voxel->type);
 						}
 					}
 				}
 			}
 		}
 
-		void VoxelActor::addQuad(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 d)
+		void VoxelActor::addQuad(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 d, int type)
 		{
 			Render::Structures::Polygon p1, p2;
+
+			glm::vec3 voxel_colour = this->getVoxelColour(type);
 
 			p1.a.position = a;
 			p1.b.position = c;
@@ -97,13 +99,13 @@ namespace LibVolume
 			p1.correctNormals();
 			p2.correctNormals();
 
-			p1.a.colour = glm::vec3(1.0, 1.0, 1.0);
-			p1.b.colour = glm::vec3(1.0, 1.0, 1.0);
-			p1.c.colour = glm::vec3(1.0, 1.0, 1.0);
+			p1.a.colour = voxel_colour;
+			p1.b.colour = voxel_colour;
+			p1.c.colour = voxel_colour;
 
-			p2.a.colour = glm::vec3(1.0, 1.0, 1.0);
-			p2.b.colour = glm::vec3(1.0, 1.0, 1.0);
-			p2.c.colour = glm::vec3(1.0, 1.0, 1.0);
+			p2.a.colour = voxel_colour;
+			p2.b.colour = voxel_colour;
+			p2.c.colour = voxel_colour;
 
 			this->mesh->polygons.push_back(p1);
 			this->mesh->polygons.push_back(p2);
@@ -243,7 +245,7 @@ namespace LibVolume
 
 		glm::vec3 VoxelActor::getVoxelColour(int type)
 		{
-			if (this->colour_table.size() <= type)
+			if (this->colour_table.size() <= (unsigned int)type)
 				return glm::vec3(1.0f, 1.0f, 1.0f);
 
 			return this->colour_table[type];

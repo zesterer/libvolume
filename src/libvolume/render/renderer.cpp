@@ -194,7 +194,7 @@ namespace LibVolume
 				gl::glDisableVertexAttribArray(count);
 		}
 
-		void Renderer::postRender(RenderMode render_mode, glm::vec3 background_colour)
+		void Renderer::postRender(RenderMode render_mode, glm::vec3 background_colour, int time)
 		{
             this->preRender(render_mode);
 
@@ -262,6 +262,14 @@ namespace LibVolume
 			//Find the uniform Field of View, then assign it
 			gl::GLuint fov_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "FOV");
 			gl::glUniform1f(fov_id, this->camera->fov);
+
+			//Find the uniform fog distance, then assign it
+			gl::GLuint fog_distance_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "FOG_DISTANCE");
+			gl::glUniform1f(fog_distance_id, this->camera->fog_distance);
+
+			//Find the uniform time, then assign it
+			gl::GLuint time_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "TIME");
+			gl::glUniform1i(time_id, time);
 
 			//Find the background colour, then assign it
 			gl::GLuint background_colour_id = gl::glGetUniformLocation(this->postdeferred_shader->gl_id, "BACKGROUND_COLOUR");

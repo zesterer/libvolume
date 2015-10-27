@@ -19,7 +19,7 @@ namespace LibVolume
 		class Realm
 		{
 			public:
-				long long time;
+				long time;
 
 				Camera camera;
 

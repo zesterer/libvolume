@@ -86,7 +86,7 @@ namespace LibVolume
 				}
 			}
 
-			this->renderer.postRender(Render::RenderMode::PostDeferred, this->background_colour);
+			this->renderer.postRender(Render::RenderMode::PostDeferred, this->background_colour, (int)this->time);
 		}
 
 		void Realm::linkTo(Window::Window& window)
