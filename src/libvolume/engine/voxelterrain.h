@@ -20,8 +20,9 @@ namespace LibVolume
 
 				bool smooth_normals;
 				MeshingAlgorithm meshing_algorithm;
+				bool smooth_colour;
 
-				VoxelTerrain(glm::ivec3 child_size, MeshingAlgorithm algorithm, bool smooth_normals = true);
+				VoxelTerrain(glm::ivec3 child_size, MeshingAlgorithm algorithm, bool smooth_normals = true, bool smooth_colour = true);
 				bool loadAt(glm::ivec3 pos) override;
 				VoxelTerrainChild* getAt(glm::ivec3 pos) override;
 				Data::Voxel* getVoxelAt(glm::ivec3 pos);

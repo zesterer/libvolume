@@ -13,7 +13,7 @@ namespace LibVolume
 			this->objecttype = ObjectType::VoxelActorObject;
 		}
 
-		void VoxelActor::extract(MeshingAlgorithm algorithm, bool smooth_normals) //Extract a mesh from the voxel field
+		void VoxelActor::extract(MeshingAlgorithm algorithm, bool smooth_normals, bool smooth_colour) //Extract a mesh from the voxel field
 		{
 			IO::output("Extracting mesh from voxel field of size " + std::to_string(this->size.x * this->size.y * this->size.z));
 
@@ -30,13 +30,13 @@ namespace LibVolume
 
 				case (MeshingAlgorithm::MarchingCubes):
 				{
-					this->extractMarchingCubes(true, smooth_normals);
+					this->extractMarchingCubes(true, smooth_normals, smooth_colour);
 					break;
 				}
 
 				case (MeshingAlgorithm::SurfaceNets):
 				{
-					this->extractMarchingCubes(false, smooth_normals);
+					this->extractMarchingCubes(false, smooth_normals, smooth_colour);
 					break;
 				}
 			}
@@ -111,7 +111,7 @@ namespace LibVolume
 			this->mesh->polygons.push_back(p2);
 		}
 
-		void VoxelActor::extractMarchingCubes(bool use_density, bool smooth_normals)
+		void VoxelActor::extractMarchingCubes(bool use_density, bool smooth_normals, bool smooth_colour)
 		{
 			glm::ivec3 count;
 			glm::ivec3 initial;
@@ -154,7 +154,7 @@ namespace LibVolume
 						if (index != 0 && index != 255) //Make sure it's not fully empty or fully filled
 						{
 							//Get the configuration
-							std::vector<Render::Structures::Polygon> polygons = this->getMarchingCubesPolygonConfiguration(index, density_cube, use_density, this->getAt(count)->type);
+							std::vector<Render::Structures::Polygon> polygons = this->getMarchingCubesPolygonConfiguration(count, index, density_cube, use_density, smooth_colour, this->getAt(count)->type);
 
 							//World::Generation::PerlinNoise noise;
 							//Move all those polygons to their correct position in the mesh
@@ -182,7 +182,9 @@ namespace LibVolume
 			}
 		}
 
-		std::vector<Render::Structures::Polygon> VoxelActor::getMarchingCubesPolygonConfiguration(unsigned char index, float density[8], bool use_density, int type)
+		//Seriously, I'm not even going to try to explain this monster.
+		//Just go with it. It works, ok?
+		std::vector<Render::Structures::Polygon> VoxelActor::getMarchingCubesPolygonConfiguration(glm::ivec3 pos, unsigned char index, float density[8], bool use_density, bool smooth_colour, int type)
 		{
 			std::vector<Render::Structures::Polygon> polygons;
 			int triangles[16];
@@ -208,6 +210,10 @@ namespace LibVolume
 						poly.b.position = glm::mix(MC_EDGES[triangles[c + 1]][0], MC_EDGES[triangles[c + 1]][1], 0.5);
 						poly.a.position = glm::mix(MC_EDGES[triangles[c + 2]][0], MC_EDGES[triangles[c + 2]][1], 0.5);
 
+						poly.c.colour = glm::mix(this->getVoxelColour(this->getAt(pos + MC_INTEDGES[triangles[c + 0]][0])->type), this->getVoxelColour(this->getAt(pos + MC_INTEDGES[triangles[c + 0]][1])->type), 0.5f);
+						poly.b.colour = glm::mix(this->getVoxelColour(this->getAt(pos + MC_INTEDGES[triangles[c + 1]][0])->type), this->getVoxelColour(this->getAt(pos + MC_INTEDGES[triangles[c + 1]][1])->type), 0.5f);
+						poly.a.colour = glm::mix(this->getVoxelColour(this->getAt(pos + MC_INTEDGES[triangles[c + 2]][0])->type), this->getVoxelColour(this->getAt(pos + MC_INTEDGES[triangles[c + 2]][1])->type), 0.5f);
+
 						//poly.c.position = this->getInterp(triangles[c + 0], density);
 						//poly.b.position = this->getInterp(triangles[c + 1], density);
 						//poly.a.position = this->getInterp(triangles[c + 2], density);
@@ -224,17 +230,29 @@ namespace LibVolume
 						float x;
 						x = (this->threshold - density[MC_EDGES_TO_INT[triangles[c + 0]][0]]) / (density[MC_EDGES_TO_INT[triangles[c + 0]][1]] - density[MC_EDGES_TO_INT[triangles[c + 0]][0]]);
 						poly.c.position = glm::mix(MC_EDGES[triangles[c + 0]][0], MC_EDGES[triangles[c + 0]][1], x);
+
+						if (smooth_colour)
+							poly.c.colour = glm::mix(this->getVoxelColour(this->getAt(pos + MC_INTEDGES[triangles[c + 0]][0])->type), this->getVoxelColour(this->getAt(pos + MC_INTEDGES[triangles[c + 0]][1])->type), x);
+
 						x = (this->threshold - density[MC_EDGES_TO_INT[triangles[c + 1]][0]]) / (density[MC_EDGES_TO_INT[triangles[c + 1]][1]] - density[MC_EDGES_TO_INT[triangles[c + 1]][0]]);
 						poly.b.position = glm::mix(MC_EDGES[triangles[c + 1]][0], MC_EDGES[triangles[c + 1]][1], x);
+
+						if (smooth_colour)
+							poly.b.colour = glm::mix(this->getVoxelColour(this->getAt(pos + MC_INTEDGES[triangles[c + 1]][0])->type), this->getVoxelColour(this->getAt(pos + MC_INTEDGES[triangles[c + 1]][1])->type), x);
+
 						x = (this->threshold - density[MC_EDGES_TO_INT[triangles[c + 2]][0]]) / (density[MC_EDGES_TO_INT[triangles[c + 2]][1]] - density[MC_EDGES_TO_INT[triangles[c + 2]][0]]);
 						poly.a.position = glm::mix(MC_EDGES[triangles[c + 2]][0], MC_EDGES[triangles[c + 2]][1], x);
+
+						if (smooth_colour)
+							poly.a.colour = glm::mix(this->getVoxelColour(this->getAt(pos + MC_INTEDGES[triangles[c + 2]][0])->type), this->getVoxelColour(this->getAt(pos + MC_INTEDGES[triangles[c + 2]][1])->type), x);
 					}
 
-					poly.a.colour = voxel_colour;
-					poly.b.colour = voxel_colour;
-					poly.c.colour = voxel_colour;
-
-					//poly.correctNormals();
+					if (!smooth_colour)
+					{
+						poly.a.colour = voxel_colour;
+						poly.b.colour = voxel_colour;
+						poly.c.colour = voxel_colour;
+					}
 
 					polygons.push_back(poly);
 				}
