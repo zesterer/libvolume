@@ -141,6 +141,18 @@ void main()
 	//Decode back into HDR
 	BUFFER_COLOUR = BUFFER_COLOUR / (1.0 - BUFFER_COLOUR);
 
+	if (true)
+	{
+		vec4 norm = vec4(0.0, 0.0, 0.0, 0.0);
+		vec3 pos  = vec3(BUFFER_MESH_POSITION * 600.0).xyz;
+
+		norm.x    = getPerlin(vec4(pos, 1.0), 0.5, 3.0, 1.0);
+		norm.y    = getPerlin(vec4(pos, 2.0), 0.5, 3.0, 1.0);
+		norm.z    = getPerlin(vec4(pos, 3.0), 0.5, 3.0, 1.0);
+		norm      = normalize(norm);
+		BUFFER_NORMAL  = normalize(BUFFER_NORMAL + norm * 0.25);
+	}
+
 	if (BUFFER_COLOUR.r > 100.0)
 		BUFFER_COLOUR.r = 0.0;
 
@@ -203,7 +215,7 @@ void main()
 	}
 	else
 	{
-		float p = 0.8;// + getPerlin(BUFFER_MESH_POSITION / 10.0, 1.0, 4.0, 1.0) / 2.5;
+		float p = 0.8 + getPerlin(BUFFER_MESH_POSITION * 1.0, 1.0, 4.0, 1.0) / 2.5;
 
 		COLOUR = BUFFER_COLOUR * p * diffuse + specular;
 	}
